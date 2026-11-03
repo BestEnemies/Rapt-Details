@@ -60,10 +60,21 @@ The app fetches it from the device **twin** (GraphQL `get_device_twin`, field
 ## What the 6 decrypted bytes mean
 
 Per device type. Observed so far:
-- **FermChamber:** ASCII colour hex (e.g. `ff3000`, cycling `feb000…fee000`) — a
-  status/LED colour, not temperature.
+- **FermChamber (FridgeG5):** the 6 bytes are **ASCII hex text encoding 3 binary
+  bytes**; the first two are the **chamber temperature as a big-endian signed 16-bit
+  8.8 fixed-point value (÷256 → °C, 1/16 °C resolution)**, the third byte has been
+  `0x00` in every packet (status/flags or padding). E.g. `"056000"` → `05 60 00` →
+  `0x0560 / 256 = +5.375 °C`. Verified live against the portal and a door-open test
+  (see `fermentationChamber/README.md`). The text encoding is characteristic of the
+  older `fancyfridge` firmware.
+- **AirStill:** the app parses its decrypted payload as raw bytes — `[0:2]` BE ÷ 10 =
+  temperature °C, `[2:4]` BE ÷ 10 = ethanol % (`_onLiveScanDevice`, "AirStill live").
 - **Laser level:** this device type uses the plaintext `0xA1` advert on the tested
   unit, so its `0xB1` layout is untested.
+
+Note the app's own live scanner only decodes the laser and AirStill beacons; it does
+not decode the chamber beacon at all (chamber temperature comes from the cloud), so
+the FermChamber layout above is this project's finding, not the app's.
 
 ## Verification oracle (no key needed to test a candidate)
 

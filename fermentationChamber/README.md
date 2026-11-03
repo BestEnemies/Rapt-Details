@@ -101,10 +101,34 @@ DAC/LEDC/MCPWM/touch/ADC2/RMT/I2S/PCNT code is linked in.
 
 The chamber broadcasts an **encrypted `0xB1` advert**. The scheme — AES-128
 keystream keyed by the device's `thingName` — is documented in
-[`../common/encrypted-advert-0xB1.md`](../common/encrypted-advert-0xB1.md). On the
-unit tested, the decrypted 6 bytes are an ASCII colour hex (`ff3000`, cycling
-through `feb000…fee000`): a status/LED colour rather than temperature. The
-temperature and setpoints come from the cloud twin, not the beacon.
+[`../common/encrypted-advert-0xB1.md`](../common/encrypted-advert-0xB1.md).
+
+**What it contains: the live chamber temperature.** The 6 decrypted bytes are ASCII
+hex text encoding 3 binary bytes:
+
+```
+"056000"  →  05 60 00
+             ├─ 0x0560  int16 big-endian, 8.8 fixed point → ÷256 = +5.375 °C
+             └─ 0x00    third byte: 0x00 in every packet so far (status/flags or padding)
+```
+
+Resolution is 1/16 °C (the raw value only moves in steps of 16). Verified on this
+unit:
+
+| when | decoded | situation |
+|---|---|---|
+| idle, held still | −0.81 °C, identical across 11 packets | fridge near its −2 °C target |
+| normal cycling | −1.31 → −1.13 → −1.31 °C over a minute | portal built-in probe read −1.5 °C shortly before |
+| **door opened** | **+5.4 → +5.9 °C and climbing ~1.5 °C/min** | portal had read −2.7 °C four minutes earlier |
+| **door closed again** | **+3.1 → +2.3 °C, falling ~1.5 °C/min** (from the +5.9 peak 70 s earlier) | cold mass re-cooling the air at the probe |
+
+The rise-and-fall on a door open/close is what a −2.7 °C chamber's air probe does, so
+the beacon is the built-in probe, live — the cloud only samples it every ~45 minutes. The RAPT
+Brew app itself never decodes this beacon (its live scanner handles only the laser
+and AirStill); this layout is our finding. Setpoints and control state still come
+from the cloud twin. Decoder: `../laserLevel/rapt_laser_decode.py` with the chamber's
+`thingName` added to `THING_NAMES` — it prints the decrypted bytes; apply the ÷256 rule
+to the first two decoded bytes.
 
 ## Not in the repo
 
