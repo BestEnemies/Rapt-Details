@@ -1,0 +1,43 @@
+menu "Chamber Screen"
+
+    config CS_WIFI_SSID
+        string "WiFi SSID"
+        default "changeme"
+        help
+            Network the controller joins for the web UI and OTA updates.
+
+    config CS_WIFI_PASSWORD
+        string "WiFi password"
+        default "changeme"
+
+    config CS_WIFI_MAX_RETRY
+        int "WiFi connect retries before giving up"
+        default 8
+        help
+            After this many failures the controller carries on without a
+            network. Local control must never depend on the cloud, so this
+            is not fatal.
+
+    config CS_HOSTNAME
+        string "Hostname / mDNS name"
+        default "fridge"
+
+    config CS_WEBUI_ENABLE
+        bool "Enable web UI, live log and OTA upload"
+        default y
+        help
+            Serves a status page with a live log tail and accepts firmware
+            uploads. Development convenience: there is NO authentication,
+            so keep this off any network you do not trust.
+
+    config CS_NETLOG_BUFFER_SIZE
+        int "In-memory log ring buffer (bytes)"
+        default 6144
+        depends on CS_WEBUI_ENABLE
+        help
+            Statically allocated, so it comes straight out of internal DRAM -
+            which WiFi, BLE and TLS have largely spoken for already. 12 KB
+            here was enough to overflow dram0_0_seg once LVGL was linked in.
+            6 KB still holds a useful tail; the browser keeps the history.
+
+endmenu

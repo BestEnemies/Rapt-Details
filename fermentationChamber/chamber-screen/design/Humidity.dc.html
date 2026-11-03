@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+    .num { font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+  </style>
+</helmet>
+
+<div style="width: 240px; height: 320px; background: #0e141a; color: #e6ecf1;
+            display: flex; flex-direction: column; padding: 14px 14px 12px;
+            box-sizing: border-box; gap: 10px">
+
+  <div style="display: flex; align-items: center; gap: 8px">
+    <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.08em">HUMIDITY</span>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 600; color: #8fa3b4">
+      SHT31</span>
+  </div>
+
+  <div style="display: flex; align-items: baseline; justify-content: center; gap: 4px">
+    <span class="num" style="font-size: 96px; font-weight: 800; line-height: 0.92">82</span>
+    <span style="font-size: 30px; font-weight: 700; color: #8fa3b4">%</span>
+  </div>
+
+  <div style="display: flex; align-items: baseline; justify-content: center; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600; letter-spacing: 0.08em;
+                 color: #8fa3b4">TARGET</span>
+    <span class="num" style="font-size: 30px; font-weight: 700">80</span>
+    <span style="font-size: 15px; font-weight: 600; color: #8fa3b4">+3</span>
+  </div>
+
+  <!-- reheat is the one state worth calling out: two actuators are fighting -->
+  <div style="display: flex; flex-direction: column; gap: 7px; background: #33280f;
+              border-radius: 4px; padding: 10px">
+    <div style="display: flex; align-items: center; gap: 8px">
+      <div style="width: 10px; height: 10px; border-radius: 50%; background: #dc9b42;
+                  flex-shrink: 0"></div>
+      <span style="font-size: 15px; font-weight: 800; letter-spacing: 0.06em;
+                   color: #dc9b42">REHEAT ON</span>
+      <span class="num" style="margin-left: auto; font-size: 15px; font-weight: 700;
+                   color: #dc9b42">6m</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span style="font-size: 14px; font-weight: 600; color: #5ea2ce">COOL</span>
+      <span style="font-size: 14px; font-weight: 600; color: #e07a50">HEAT</span>
+      <span style="margin-left: auto; font-size: 14px; font-weight: 600; color: #8fa3b4">
+        holds 20.0&deg;C</span>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600; color: #8fa3b4">aborts beyond</span>
+    <span class="num" style="font-size: 15px; font-weight: 700">&plusmn;2.0&deg;C</span>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 600; color: #8fa3b4">
+      cap 30m</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

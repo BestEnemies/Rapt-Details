@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+    .num { font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+  </style>
+</helmet>
+
+<div style="width: 240px; height: 320px; background: #0e141a; color: #e6ecf1;
+            display: flex; flex-direction: column; padding: 14px 14px 12px;
+            box-sizing: border-box; gap: 12px">
+
+  <div style="font-size: 14px; font-weight: 800; letter-spacing: 0.08em; color: #8fa3b4">
+    COOLING HYSTERESIS</div>
+
+  <!-- the value being edited owns the screen -->
+  <div style="display: flex; align-items: center; justify-content: center; gap: 14px;
+              margin-top: 10px">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc9b42"
+         stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path>
+    </svg>
+    <span class="num" style="font-size: 78px; font-weight: 800; line-height: 0.92;
+                 color: #dc9b42">1.5</span>
+  </div>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 14px">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc9b42"
+         stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14"></path><path d="M6 13l6 6 6-6"></path>
+    </svg>
+    <span style="font-size: 16px; font-weight: 600; color: #8fa3b4">&deg;C</span>
+  </div>
+
+  <!-- what it was, so a mis-turn is recoverable by eye -->
+  <div style="display: flex; align-items: baseline; justify-content: center; gap: 8px">
+    <span style="font-size: 14px; font-weight: 600; letter-spacing: 0.08em;
+                 color: #8fa3b4">WAS</span>
+    <span class="num" style="font-size: 18px; font-weight: 700; color: #8fa3b4">1.0</span>
+  </div>
+
+  <div style="font-size: 14px; font-weight: 600; line-height: 1.45; color: #8fa3b4">
+    Up/down changes value; select will confirm; back will cancel</div>
+
+  <div style="display: flex; align-items: center; gap: 10px; border-top: 1px solid #3a4a5a;
+              padding-top: 10px; margin-top: auto">
+    <span style="font-size: 14px; font-weight: 700; color: #6fbf8e">CONFIRM</span>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 700; color: #8fa3b4">
+      CANCEL</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

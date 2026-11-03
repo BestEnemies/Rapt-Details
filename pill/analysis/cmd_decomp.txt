@@ -1,0 +1,214 @@
+// ===== FUN_400ee580 @ 400ee580  (svc0100_wifi_cb) =====
+
+
+undefined4 FUN_400ee580(undefined2 param_1,short param_2,char *param_3)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  
+  iVar1 = FUN_400ec720(param_1);
+  uVar2 = 8;
+  if (iVar1 != 0) {
+    if (*DAT_400d273c == param_2) {
+      uVar2 = FUN_400eeccc(DAT_400d2740,param_3);
+    }
+    else if (*DAT_400d2744 == param_2) {
+      uVar2 = FUN_400eeac0(DAT_400d2740,param_1,param_3);
+    }
+    else {
+      if (*param_3 == '\0') {
+        if ((*DAT_400d2748 != param_2) && (*DAT_400d274c != param_2)) {
+          return 2;
+        }
+        iVar1 = FUN_400fb2a0(*(undefined4 *)(param_3 + 4),PTR_s_0_3f40255a_0x1d_400d2750,1);
+        if (iVar1 != 0) {
+          return 0x11;
+        }
+      }
+      else {
+        if (*param_3 != '\x01') {
+          uVar2 = FUN_400d569c();
+          FUN_40096c74(1,PTR_s_ble_wifi_400d2758,DAT_400d275c,uVar2,PTR_s_ble_wifi_400d2758,*param_3
+                      );
+          return 6;
+        }
+        if (*DAT_400d274c == param_2) {
+          FUN_400ea0c4();
+        }
+        else {
+          if (*DAT_400d2754 != param_2) {
+            return 10;
+          }
+          FUN_400e983c();
+          FUN_400ea0d4();
+        }
+      }
+      uVar2 = 0;
+    }
+  }
+  return uVar2;
+}
+
+
+
+// ===== FUN_400eeccc @ 400eeccc  (wifi_fn_ccc) =====
+
+
+void FUN_400eeccc(int param_1,char *param_2)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  undefined *puVar3;
+  
+  iVar1 = FUN_400eeb20(param_1,param_2);
+  if (iVar1 != 0) {
+    *(undefined1 *)(param_1 + 0x20) = 1;
+    uVar2 = FUN_400d569c();
+    puVar3 = PTR_s_read_3f405210_2_400d27d8;
+    if (*param_2 == '\x01') {
+      puVar3 = PTR_s_write_400d27d4;
+    }
+    FUN_40096c74(2,PTR_s_ble_mux_400d27dc,PTR_s_W___s___s__GATT_control__s_rejec_400d27e4,uVar2,
+                 PTR_s_ble_mux_400d27dc,puVar3,*(undefined1 *)(param_1 + 0x2a),
+                 *(undefined4 *)(param_1 + 0x10),iVar1);
+  }
+  return;
+}
+
+
+
+// ===== FUN_400eeac0 @ 400eeac0  (wifi_fn_ac0) =====
+
+
+void FUN_400eeac0(int param_1,undefined2 param_2,char *param_3)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  undefined *puVar3;
+  
+  iVar1 = FUN_400ee9c0(param_1,param_2,param_3);
+  if (iVar1 != 0) {
+    *(undefined1 *)(param_1 + 0x20) = 1;
+    uVar2 = FUN_400d569c();
+    puVar3 = PTR_s_read_3f405210_2_400d27d8;
+    if (*param_3 == '\x01') {
+      puVar3 = PTR_s_write_400d27d4;
+    }
+    FUN_40096c74(2,PTR_s_ble_mux_400d27dc,PTR_s_W___s___s__GATT_data__s_rejected_400d27e0,uVar2,
+                 PTR_s_ble_mux_400d27dc,puVar3,*(undefined1 *)(param_1 + 0x2a),iVar1);
+  }
+  return;
+}
+
+
+
+// ===== FUN_400ea0c4 @ 400ea0c4  (wifi_fn_a0c4) =====
+
+
+void FUN_400ea0c4(void)
+
+{
+  FUN_400ea028(5,0);
+  return;
+}
+
+
+
+// ===== FUN_400e983c @ 400e983c  (wifi_fn_983c) =====
+
+
+int FUN_400e983c(void)
+
+{
+  int iVar1;
+  int iVar2;
+  undefined4 local_24 [9];
+  
+  iVar1 = FUN_400eb044(0xffffffff);
+  iVar2 = -1;
+  if (iVar1 != 0) {
+    iVar2 = FUN_40109f40(PTR_s_espwifimgr_400d2108,1,local_24);
+    if (iVar2 == 0) {
+      iVar2 = FUN_40109f58(local_24[0],PTR_s_ssid_3f420176_4_400d210c);
+      if ((iVar2 == 0) && (iVar2 = FUN_40109f58(local_24[0],PTR_s_password_400d2110), iVar2 == 0)) {
+        iVar2 = FUN_40109f58(local_24[0],PTR_s_settings_400d2114);
+      }
+      FUN_4010a064(local_24[0]);
+      FUN_4010a2e8(local_24[0]);
+    }
+    FUN_400eb064();
+  }
+  return iVar2;
+}
+
+
+
+// ===== FUN_400ea0d4 @ 400ea0d4  (wifi_fn_a0d4) =====
+
+
+void FUN_400ea0d4(void)
+
+{
+  FUN_400ea028(8,0);
+  return;
+}
+
+
+
+// ===== FUN_400fb2a0 @ 400fb2a0  (wifi_fn_fb2a0) =====
+
+
+undefined4 FUN_400fb2a0(int *param_1,int param_2,ushort param_3)
+
+{
+  ushort uVar1;
+  bool bVar2;
+  int iVar3;
+  int *piVar4;
+  uint uVar5;
+  int *piVar6;
+  undefined4 uVar7;
+  ushort *puVar8;
+  
+  uVar5 = (uint)param_3;
+  uVar7 = 2;
+  if (param_1 != (int *)0x0) {
+    puVar8 = (ushort *)param_1[2];
+    piVar4 = param_1;
+    do {
+      piVar6 = piVar4;
+      piVar4 = (int *)piVar6[3];
+    } while ((int *)piVar6[3] != (int *)0x0);
+    iVar3 = (*(code *)PTR_FUN_400d3348)(piVar6);
+    if (iVar3 != 0) {
+      iVar3 = ((int)uVar5 < iVar3) * uVar5 + (uint)((int)uVar5 >= iVar3) * iVar3;
+      (*DAT_400d0028)(*piVar6 + (uint)*(ushort *)((int)piVar6 + 6),param_2,iVar3);
+      param_2 = param_2 + iVar3;
+      *(short *)((int)piVar6 + 6) = (short)iVar3 + *(short *)((int)piVar6 + 6);
+      uVar5 = uVar5 - iVar3;
+    }
+    while ((0 < (int)uVar5 && (piVar4 = (int *)FUN_400fb19c(puVar8,0), piVar4 != (int *)0x0))) {
+      uVar1 = *puVar8;
+      bVar2 = (int)(uint)uVar1 < (int)uVar5;
+      *(ushort *)((int)piVar4 + 6) = bVar2 * uVar1 + (ushort)!bVar2 * (short)uVar5;
+      (*DAT_400d0028)(*piVar4,param_2);
+      uVar1 = *(ushort *)((int)piVar4 + 6);
+      piVar6[3] = (int)piVar4;
+      param_2 = param_2 + (uint)uVar1;
+      uVar5 = uVar5 - uVar1;
+      piVar6 = piVar4;
+    }
+    if (7 < *(byte *)((int)param_1 + 5)) {
+      *(ushort *)(param_1 + 4) = (param_3 + (short)param_1[4]) - (short)uVar5;
+    }
+    uVar7 = 1;
+    if (uVar5 == 0) {
+      uVar7 = 0;
+    }
+  }
+  return uVar7;
+}
+

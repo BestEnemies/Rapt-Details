@@ -1,0 +1,170 @@
+{
+  "artboards": [
+    {
+      "file": "Boot.dc.html",
+      "x": -340,
+      "y": 0,
+      "w": 240,
+      "h": 320,
+      "title": "Boot"
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 240,
+      "h": 320,
+      "title": "Main status"
+    },
+    {
+      "file": "Pill.dc.html",
+      "x": 340,
+      "y": 0,
+      "w": 240,
+      "h": 320,
+      "title": "Pill detail"
+    },
+    {
+      "file": "Humidity.dc.html",
+      "x": 680,
+      "y": 0,
+      "w": 240,
+      "h": 320,
+      "title": "Humidity"
+    },
+    {
+      "file": "Graph.dc.html",
+      "x": 1020,
+      "y": 0,
+      "w": 240,
+      "h": 320,
+      "title": "History"
+    },
+    {
+      "file": "Profile.dc.html",
+      "x": -340,
+      "y": 460,
+      "w": 240,
+      "h": 320,
+      "title": "Profile running"
+    },
+    {
+      "file": "Alarm.dc.html",
+      "x": 0,
+      "y": 460,
+      "w": 240,
+      "h": 320,
+      "title": "Alarm"
+    },
+    {
+      "file": "Settings.dc.html",
+      "x": 340,
+      "y": 460,
+      "w": 240,
+      "h": 320,
+      "title": "Settings list"
+    },
+    {
+      "file": "SettingsEdit.dc.html",
+      "x": 680,
+      "y": 460,
+      "w": 240,
+      "h": 320,
+      "title": "Editing a value"
+    },
+    {
+      "file": "Calibrate.dc.html",
+      "x": 1020,
+      "y": 460,
+      "w": 240,
+      "h": 320,
+      "title": "Probe calibration"
+    },
+    {
+      "file": "Register.dc.html",
+      "x": -340,
+      "y": 920,
+      "w": 240,
+      "h": 320,
+      "title": "Register device"
+    },
+    {
+      "file": "Update.dc.html",
+      "x": 0,
+      "y": 920,
+      "w": 240,
+      "h": 320,
+      "title": "Firmware update"
+    },
+    {
+      "file": "ProfileEmpty.dc.html",
+      "x": 340,
+      "y": 920,
+      "w": 240,
+      "h": 320,
+      "title": "No profiles"
+    },
+    {
+      "file": "Confirm.dc.html",
+      "x": 680,
+      "y": 920,
+      "w": 240,
+      "h": 320,
+      "title": "Destructive confirm"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "brief",
+      "x": -340,
+      "y": -215,
+      "w": 560,
+      "text": "RAPT FridgeG5 panel - ST7789V 240x320, RGB565.\nRead at a glance from across a room, often through a fridge door.\n\nRow 1 is the at-a-glance rotation: boot, then up/down between main / pill / humidity / history.\nRow 2 is what you stop and interact with, plus the alarm that interrupts everything.\nRow 3 is the occasional flows - first-run registration and firmware updates.\n\nColours follow the project's existing vocabulary - cooling #5ea2ce, heating #e07a50, dehumidify #dc9b42, ok #6fbf8e - but the NEUTRALS are lifted from the web UI's: #151d25 on #0e141a quantises to about 1.04:1 in RGB565 and would be invisible on this panel."
+    },
+    {
+      "id": "font-note",
+      "x": 1020,
+      "y": -215,
+      "w": 340,
+      "text": "LVGL ships Montserrat only up to 48px, so the large numerals need a font generated with lv_font_conv. Only the digits, a dot, a minus and a degree sign need including.\n\nNumerals are sized for the WORST case string (-10.0), not the typical one - 18.4 at 96px measured about 237px wide in a 212px space."
+    },
+    {
+      "id": "profile-note",
+      "x": -340,
+      "y": 1290,
+      "w": 340,
+      "text": "A profile step ends on TIME or on GRAVITY - the stock firmware carries a ProfileGravityCondition with setThreshold and gotGravityReading.\n\nThat is what the Pill is for, so the step screen states which condition is in force rather than only counting down. Switch with the artboard's tweak."
+    },
+    {
+      "id": "alarm-note",
+      "x": 0,
+      "y": 830,
+      "w": 300,
+      "text": "Alarm red #d8483a is deliberately distinct from the heating orange #e07a50 - at a glance the two must never be confused.\n\nAll nine alarm strings are the stock firmware's own; switch between them with the artboard's tweak."
+    },
+    {
+      "id": "settings-note",
+      "x": 340,
+      "y": 830,
+      "w": 620,
+      "text": "The stock menu has 34 items, read verbatim out of ui_settings.cpp - so this is a scrolling list, not a fixed set of rows.\n\nFull set: Temperature sensor / Show graph / Unit system / Zoom level / Cooling hysteresis / Heating hysteresis / Compressor cooldown / Mode switch delay / Cooler enabled / Heater enabled / Fan always on / Light on / Bluetooth enabled / Allowed sensor diff. / Sensor timeout / Sounds enabled / Calibrate point 1 / Calibrate point 2 / Forget calibration / NTC beta / NTC ref. temperature / NTC ref. resistance / Relay cycle time / PID heating / PID P, I, D coefficient / Low temp. alarm / High temp. alarm / Forget Wi-Fi config / Clear registration / Check for OTA update / Beta update stream / Enable test API / Enable Wi-Fi.\n\nStock value vocabularies worth keeping: Metric / Imperial; Always on / Always off / Automatic (fan); 7 hours / 1 day / 2 days / 7 days / 14 days / 28 days (graph zoom); Built-in (temperature sensor)."
+    },
+    {
+      "id": "register-note",
+      "x": 0,
+      "y": 1290,
+      "w": 340,
+      "text": "Registration is OAuth 2.0 device flow against id.rapt.io with client_id=rapt-device, so the panel shows a user_code that gets typed into the portal. The code is the subject of that screen - it is transcribed by hand, from a screen, into a phone.\n\nAll copy on both screens is the stock firmware's own."
+    },
+    {
+      "id": "confirm-note",
+      "x": 680,
+      "y": 1290,
+      "w": 320,
+      "text": "The stock confirmations spell out the CONSEQUENCE - restarts the device, must also be deleted in the portal - rather than asking 'are you sure?'. That is the difference between a confirmation that informs and one that gets reflexively dismissed."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

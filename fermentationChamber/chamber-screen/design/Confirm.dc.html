@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+  </style>
+</helmet>
+
+<!--
+  Destructive confirmations. The stock firmware spells out the CONSEQUENCE
+  (restarts the device, must also be deleted in the portal) rather than asking
+  "are you sure?" - which is the difference between a confirmation that
+  informs and one that is reflexively dismissed. Copy kept verbatim.
+-->
+<div style="width: 240px; height: 320px; background: #0e141a; color: #e6ecf1;
+            display: flex; flex-direction: column; padding: 14px 14px 12px;
+            box-sizing: border-box; gap: 12px">
+
+  <div style="display: flex; align-items: center; gap: 9px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d8483a"
+         stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.3 3.2 1.8 17.5A2 2 0 0 0 3.5 20.5h17a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0Z"></path>
+      <path d="M12 9v4.5"></path><path d="M12 17.2h.01"></path>
+    </svg>
+    <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.06em;
+                 color: #d8483a">CLEAR REGISTRATION</span>
+  </div>
+
+  <div style="font-size: 16px; font-weight: 600; line-height: 1.42">
+    This will clear registration information from the device. Doing this will
+    also restart the device.</div>
+
+  <div style="font-size: 15px; font-weight: 600; line-height: 1.42; color: #8fa3b4">
+    To unregister your device, it must also be deleted in the RAPT Portal.</div>
+
+  <div style="display: flex; align-items: center; gap: 10px; margin-top: auto;
+              border-top: 1px solid #3a4a5a; padding-top: 11px">
+    <span style="font-size: 15px; font-weight: 800; color: #d8483a">CONFIRM</span>
+    <span style="margin-left: auto; font-size: 15px; font-weight: 800;
+                 color: #8fa3b4">CANCEL</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

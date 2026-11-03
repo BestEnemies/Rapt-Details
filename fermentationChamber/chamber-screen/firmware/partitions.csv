@@ -1,0 +1,15 @@
+# Partition table matching the stock RAPT FridgeG5 layout exactly.
+#
+# Keeping this identical to stock matters: it means a full-flash restore from
+# firmware.bin remains valid, and the nvs partition holding your device
+# registration and OAuth refresh token stays where the stock firmware left it.
+#
+# Recovered from the stock image at offset 0x8000.
+#
+# Name,     Type, SubType,  Offset,   Size,      Flags
+otadata,    data, ota,      0xd000,   0x2000,
+phy_init,   data, phy,      0xf000,   0x1000,
+ota_0,      app,  ota_0,    0x10000,  0x180000,
+ota_1,      app,  ota_1,    0x190000, 0x180000,
+nvs,        data, nvs,      0x310000, 0x80000,
+history,    0x40, 0x00,     0x390000, 0x40000,

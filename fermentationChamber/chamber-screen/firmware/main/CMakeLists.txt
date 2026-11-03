@@ -1,0 +1,34 @@
+idf_component_register(
+    SRCS
+        "main.c"
+        "relays.c"
+        "buttons.c"
+        "temp_probe.c"
+        "display.c"
+        "netlog.c"
+        "wifi.c"
+        "webui.c"
+        "pill.c"
+        "thermostat.c"
+        "alarms.c"
+        "ui.c"
+        "humidity.c"
+    INCLUDE_DIRS
+        "."
+    REQUIRES
+        driver
+        esp_adc
+        esp_lcd
+        esp_timer
+        nvs_flash
+        esp_wifi
+        esp_netif
+        esp_event
+        esp_http_server
+        app_update
+        esp_app_format
+        bt
+        esp_driver_i2c
+    EMBED_TXTFILES
+        "www/index.html"
+)

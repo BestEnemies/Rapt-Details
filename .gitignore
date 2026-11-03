@@ -1,0 +1,29 @@
+# Firmware images and flash dumps — contain device registration/NVS secrets or OEM code
+*.bin
+*.elf
+*.map
+
+# Mobile app packages — third-party, large
+*.apk
+*.apks
+apk/
+
+# OEM firmware disassembly dumps — large, derived from stock images
+disasm_*.txt
+
+# ESP-IDF / PlatformIO build output
+build/
+build_*/
+managed_components/
+.pio/
+sdkconfig
+sdkconfig.old
+*.generated
+trace.txt
+
+# Local credentials — never commit
+**/secrets.h
+
+# OS / editor
+.DS_Store
+Thumbs.db

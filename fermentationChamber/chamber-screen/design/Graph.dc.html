@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+    .num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  </style>
+</helmet>
+
+<!--
+  Feeds from the 256 KB `history` partition. Span follows the stock "Zoom level"
+  vocabulary: 7 hours / 1 day / 2 days / 7 days / 14 days / 28 days.
+  Portrait is a poor shape for a plot, so the trace gets the width and the
+  axis labels are kept to the two that matter: the range and the span.
+-->
+<div style="width: 240px; height: 320px; background: #0e141a; color: #e6ecf1;
+            display: flex; flex-direction: column; padding: 14px 14px 12px;
+            box-sizing: border-box; gap: 9px">
+
+  <div style="display: flex; align-items: baseline; gap: 8px">
+    <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.06em">HISTORY</span>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 700; color: #dc9b42">
+      2 days</span>
+  </div>
+
+  <div style="display: flex; align-items: baseline; gap: 6px">
+    <span class="num" style="font-size: 40px; font-weight: 800; line-height: 0.95">18.4</span>
+    <span style="font-size: 16px; font-weight: 600; color: #8fa3b4">&deg;C now</span>
+    <span class="num" style="margin-left: auto; font-size: 16px; font-weight: 700;
+                 color: #6fbf8e">1.011</span>
+  </div>
+
+  <svg width="212" height="130" viewBox="0 0 212 130" fill="none"
+       style="display: block">
+    <!-- band around target: where it is supposed to sit -->
+    <rect x="0" y="44" width="212" height="26" fill="#16283a"></rect>
+    <!-- target line -->
+    <line x1="0" y1="57" x2="212" y2="57" stroke="#3a4a5a" stroke-width="1"
+          stroke-dasharray="3 3"></line>
+
+    <!-- gravity, secondary: thin, no fill, clearly behind -->
+    <polyline points="0,24 24,28 48,34 72,42 96,52 120,62 144,71 168,78 192,84 212,88"
+              stroke="#6fbf8e" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" opacity="0.55"></polyline>
+
+    <!-- temperature: the subject of the screen -->
+    <polyline points="0,96 16,88 32,74 48,62 64,54 80,60 96,68 112,58 128,50 144,56 160,64 176,54 192,48 212,52"
+              stroke="#5ea2ce" stroke-width="2.6" stroke-linecap="round"
+              stroke-linejoin="round"></polyline>
+    <!-- now -->
+    <circle cx="212" cy="52" r="3.5" fill="#5ea2ce"></circle>
+  </svg>
+
+  <div style="display: flex; align-items: baseline; gap: 8px">
+    <span class="num" style="font-size: 14px; font-weight: 700; color: #8fa3b4">14.2</span>
+    <span style="font-size: 14px; font-weight: 600; color: #8fa3b4">to</span>
+    <span class="num" style="font-size: 14px; font-weight: 700; color: #8fa3b4">21.8</span>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 600; color: #8fa3b4">
+      48 h</span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 12px; border-top: 1px solid #3a4a5a;
+              padding-top: 9px; margin-top: auto">
+    <div style="display: flex; align-items: center; gap: 6px">
+      <div style="width: 14px; height: 3px; background: #5ea2ce; border-radius: 2px"></div>
+      <span style="font-size: 14px; font-weight: 600; color: #8fa3b4">temp</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 6px">
+      <div style="width: 14px; height: 3px; background: #6fbf8e; border-radius: 2px"></div>
+      <span style="font-size: 14px; font-weight: 600; color: #8fa3b4">gravity</span>
+    </div>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 700; color: #dc9b42">SPAN</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
