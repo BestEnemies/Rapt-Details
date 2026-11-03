@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+    .num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  </style>
+</helmet>
+
+<!--
+  A profile step ends on TIME or on GRAVITY - the stock firmware carries a
+  ProfileGravityCondition with setThreshold/gotGravityReading. Showing only a
+  countdown would misrepresent a step that is actually waiting on the wort, so
+  the end condition states which it is and how far off it is.
+  Switch with the tweak.
+-->
+<div style="width: 240px; height: 320px; background: #0e141a; color: #e6ecf1;
+            display: flex; flex-direction: column; padding: 14px 14px 12px;
+            box-sizing: border-box; gap: 9px">
+
+  <div style="display: flex; align-items: baseline; gap: 8px">
+    <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.06em;
+                 color: #dc9b42">PROFILE</span>
+    <span class="num" style="margin-left: auto; font-size: 14px; font-weight: 700;
+                 color: #8fa3b4">step 3 / 5</span>
+  </div>
+
+  <div style="font-size: 19px; font-weight: 700; line-height: 1.15">West Coast IPA</div>
+
+  <!-- step progress: five segments, one per step -->
+  <div style="display: flex; gap: 3px">
+    <div style="flex-grow: 1; height: 6px; background: #6fbf8e; border-radius: 2px"></div>
+    <div style="flex-grow: 1; height: 6px; background: #6fbf8e; border-radius: 2px"></div>
+    <div style="flex-grow: 1; height: 6px; background: #dc9b42; border-radius: 2px"></div>
+    <div style="flex-grow: 1; height: 6px; background: #3a4a5a; border-radius: 2px"></div>
+    <div style="flex-grow: 1; height: 6px; background: #3a4a5a; border-radius: 2px"></div>
+  </div>
+
+  <div style="display: flex; align-items: baseline; gap: 6px">
+    <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+                 color: #8fa3b4">HOLD</span>
+    <span class="num" style="margin-left: auto; font-size: 44px; font-weight: 800;
+                 line-height: 0.95">20.0</span>
+    <span style="font-size: 18px; font-weight: 600; color: #8fa3b4">&deg;C</span>
+  </div>
+
+  <!-- the end condition, stated plainly -->
+  <div style="display: flex; flex-direction: column; gap: 5px; background: #1e2a36;
+              border-radius: 4px; padding: 9px 10px">
+    <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+                 color: #8fa3b4">{{e.head}}</span>
+    <div style="display: flex; align-items: baseline; gap: 6px">
+      <span class="num" style="font-size: 26px; font-weight: 800;
+                   color: {{e.color}}">{{e.value}}</span>
+      <span style="font-size: 15px; font-weight: 600; color: #8fa3b4">{{e.unit}}</span>
+      <span class="num" style="margin-left: auto; font-size: 15px; font-weight: 700;
+                   color: #8fa3b4">{{e.now}}</span>
+    </div>
+  </div>
+
+  <div style="font-size: 14px; font-weight: 600; line-height: 1.35; color: #8fa3b4;
+              margin-top: auto">
+    Manual temperature control is ineffective while a profile runs.</div>
+
+  <div style="display: flex; align-items: center; gap: 10px; border-top: 1px solid #3a4a5a;
+              padding-top: 9px">
+    <span style="font-size: 14px; font-weight: 700; color: #dc9b42">END STEP</span>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 700; color: #8fa3b4">
+      STOP</span>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"endsOn":{"editor":"enum","options":["gravity","time"],"default":"gravity","section":"Step ends on"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const map = {
+      gravity: { head: 'UNTIL GRAVITY', value: '1.014', unit: 'SG', color: '#6fbf8e', now: 'now 1.021' },
+      time:    { head: 'UNTIL',         value: '2d 4h', unit: 'left', color: '#dc9b42', now: 'of 5 d' },
+    };
+    return { e: map[this.props.endsOn] ?? map.gravity };
+  }
+}
+</script>
+</body>
+</html>

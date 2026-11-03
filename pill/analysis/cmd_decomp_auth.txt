@@ -1,0 +1,181 @@
+// ===== FUN_400ec740 @ 400ec740  (FUN_400ec740 owner-authenticate (sub-char 0x0C)) =====
+
+
+undefined4
+FUN_400ec740(undefined2 param_1,undefined *param_2,uint param_3,undefined4 param_4,
+            undefined *param_5)
+
+{
+  uint *puVar1;
+  int iVar2;
+  uint uVar3;
+  undefined4 uVar4;
+  int iVar5;
+  undefined4 uVar6;
+  uint uVar7;
+  char cVar8;
+  uint in_t0;
+  uint uVar9;
+  char *pcVar10;
+  undefined *puVar11;
+  char local_65 [65];
+  int local_24;
+  
+  memw();
+  local_24 = *DAT_400d002c;
+  memw();
+  if (*DAT_400d2468 == '\0') goto LAB_400ec816;
+  param_5 = (undefined *)FUN_400ec5f0(param_1);
+  uVar6 = 0xe;
+  if (param_5 == (undefined *)0x0) goto LAB_400ec818;
+  if (param_5[4] != '\0') goto LAB_400ec816;
+  if (*DAT_400d2474 == '\0') goto LAB_400ec7c0;
+  iVar5 = *DAT_400d2478;
+  iVar2 = FUN_40092f98();
+  puVar1 = DAT_400d2480;
+  if (iVar5 - iVar2 < 1) {
+    *DAT_400d2474 = '\0';
+    *puVar1 = 0;
+    goto LAB_400ec7c0;
+  }
+  uVar6 = FUN_400d569c();
+  FUN_40096c74(2,PTR_s_ble_gap_400d2450,PTR_s_W___s___s__Owner_authentication_l_400d247c,uVar6,
+               PTR_s_ble_gap_400d2450,
+               (uint)((ulonglong)((iVar5 - iVar2) * 10 + 999) * (ulonglong)DAT_400d018c >> 0x26));
+LAB_400ec7ad:
+  uVar6 = 8;
+LAB_400ec818:
+  do {
+    memw();
+    memw();
+    if (local_24 == *DAT_400d002c) {
+      return uVar6;
+    }
+    FUN_400812f4();
+    param_3 = in_t0;
+LAB_400ec7c0:
+    while (uVar9 = param_3, puVar1 = DAT_400d2480, uVar9 != 0) {
+      if ((0xd < (byte)param_2[uVar9 - 1]) ||
+         (param_3 = uVar9 - 1, (1 << (param_2[uVar9 - 1] & 0x1f) & 0x2401U) == 0)) break;
+    }
+    if ((param_2 == (undefined *)0x0) ||
+       ((uVar3 = (*DAT_400d01c8)(DAT_400d2484), uVar3 != uVar9 ||
+        (iVar2 = (*DAT_400d1888)(param_2,DAT_400d2484,uVar9), iVar2 != 0)))) break;
+    param_5[4] = 1;
+    *puVar1 = 0;
+    uVar6 = FUN_400d569c();
+    FUN_40096c74(3,PTR_s_ble_gap_400d2450,PTR_s_I___s___s__Unlocked_by_the_peer_400d2488,uVar6,
+                 PTR_s_ble_gap_400d2450);
+LAB_400ec816:
+    uVar6 = 0;
+  } while( true );
+  pcVar10 = local_65;
+  *puVar1 = *puVar1 + 1;
+  uVar3 = 0;
+  if (param_2 != (undefined *)0x0) {
+    uVar3 = (uVar9 < 0x40) * uVar9 + (uint)(uVar9 >= 0x40) * 0x40;
+    for (uVar7 = 0; uVar3 != uVar7; uVar7 = uVar7 + 1) {
+      cVar8 = param_2[uVar7];
+      if (0x5e < (byte)(cVar8 - 0x20U)) {
+        cVar8 = '?';
+      }
+      pcVar10[uVar7] = cVar8;
+    }
+  }
+  pcVar10[uVar3] = '\0';
+  uVar6 = FUN_400d569c();
+  uVar7 = *puVar1;
+  param_2 = PTR_DAT_400d2470;
+  if (uVar3 < uVar9) {
+    param_2 = PTR_s_____3f407f30_0x1b_400d246c;
+  }
+  uVar4 = (*DAT_400d01c8)(DAT_400d2484);
+  param_5 = PTR_s_ble_gap_400d2450;
+  puVar11 = param_2;
+  FUN_40096c74(2,PTR_s_ble_gap_400d2450,PTR_s_W___s___s__Wrong_secret_from_the_400d248c,uVar6,
+               PTR_s_ble_gap_400d2450,uVar7,5,uVar9,pcVar10,param_2,uVar4);
+  if (4 < *puVar1) {
+    *DAT_400d2474 = '\x01';
+    iVar2 = FUN_40092f98();
+    *DAT_400d2478 = iVar2 + 3000;
+    uVar6 = FUN_400d569c();
+    FUN_40096c74(2,param_5,PTR_s_W___s___s___d_wrong_secrets__own_400d2490,uVar6,param_5,5,0x1e,
+                 uVar9,pcVar10,puVar11,uVar4);
+  }
+  goto LAB_400ec7ad;
+}
+
+
+
+// ===== FUN_400ec720 @ 400ec720  (FUN_400ec720 is-owner-authenticated check) =====
+
+
+undefined1 FUN_400ec720(undefined2 param_1)
+
+{
+  undefined1 uVar1;
+  int iVar2;
+  
+  uVar1 = 1;
+  if (*DAT_400d2468 != '\0') {
+    iVar2 = FUN_400ec5f0(param_1);
+    uVar1 = 0;
+    if (iVar2 != 0) {
+      uVar1 = *(undefined1 *)(iVar2 + 4);
+    }
+  }
+  return uVar1;
+}
+
+
+
+// ===== FUN_400e91f8 @ 400e91f8  (FUN_400e91f8 parse JSON object) =====
+
+
+undefined4 FUN_400e91f8(char *param_1)
+
+{
+  undefined4 uVar1;
+  char *local_24 [9];
+  
+  uVar1 = 0;
+  if (param_1 != (char *)0x0) {
+    local_24[0] = param_1;
+    if (((*param_1 == -0x11) && (param_1[1] == -0x45)) && (param_1[2] == -0x41)) {
+      local_24[0] = param_1 + 3;
+    }
+    uVar1 = FUN_400e8e40(local_24,0);
+  }
+  return uVar1;
+}
+
+
+
+// ===== FUN_400e871c @ 400e871c  (FUN_400e871c json get string field) =====
+
+
+undefined4 FUN_400e871c(undefined4 param_1,undefined4 param_2)
+
+{
+  undefined4 uVar1;
+  
+  FUN_400e862c(param_1,param_2);
+  uVar1 = FUN_400e8708();
+  return uVar1;
+}
+
+
+
+// ===== FUN_400e8670 @ 400e8670  (FUN_400e8670 json get field) =====
+
+
+undefined4 FUN_400e8670(undefined4 param_1,undefined4 param_2)
+
+{
+  undefined4 uVar1;
+  
+  FUN_400e862c(param_1,param_2);
+  uVar1 = (*(code *)PTR_FUN_400d096c)();
+  return uVar1;
+}
+

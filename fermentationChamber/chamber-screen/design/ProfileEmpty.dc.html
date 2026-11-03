@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+  </style>
+</helmet>
+
+<!--
+  An empty state should say what to DO, not just that there is nothing here.
+  The stock firmware's copy already does; it is kept verbatim.
+-->
+<div style="width: 240px; height: 320px; background: #0e141a; color: #e6ecf1;
+            display: flex; flex-direction: column; padding: 14px 14px 12px;
+            box-sizing: border-box; gap: 12px">
+
+  <div style="font-size: 14px; font-weight: 800; letter-spacing: 0.06em">SELECT PROFILE</div>
+
+  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#46586a"
+       stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+       style="margin-top: 6px">
+    <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h5l2 2.5h6A1.5 1.5 0 0 1 20 8v10.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5Z"></path>
+  </svg>
+
+  <div style="font-size: 16px; font-weight: 600; line-height: 1.4">
+    There are no profiles on this device.</div>
+
+  <div style="font-size: 15px; font-weight: 600; line-height: 1.4; color: #8fa3b4">
+    To download one, go to the RAPT online portal and select the
+    &ldquo;Profiles&rdquo; tab.</div>
+
+  <div style="display: flex; align-items: center; gap: 9px; margin-top: auto">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc9b42"
+         stroke-width="2.8" stroke-linecap="round">
+      <circle cx="12" cy="12" r="8"></circle>
+    </svg>
+    <span style="font-size: 15px; font-weight: 600; color: #dc9b42">Profile sync in progress</span>
+  </div>
+
+  <div style="border-top: 1px solid #3a4a5a; padding-top: 10px; font-size: 14px;
+              font-weight: 700; color: #8fa3b4">PRESS ANY KEY TO GO BACK</div>
+</div>
+</x-dc>
+</body>
+</html>

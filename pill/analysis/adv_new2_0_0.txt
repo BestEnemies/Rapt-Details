@@ -1,0 +1,2 @@
+// image: C:\Users\rober\Documents\Claude\Projects\RAPT Pill\app_2.0.0.bin  (ble-data str @0x3f405998)
+// refs to ble-data string: 0

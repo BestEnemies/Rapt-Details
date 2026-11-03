@@ -1,0 +1,29 @@
+# Low-power variant: runs within an FT232's ~50 mA 3.3 V regulator budget,
+# so the board can be bench-tested on adapter power alone with no separate
+# supply.
+#
+# Build with:
+#   idf.py -B build_lowpower \
+#          -DSDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.lowpower" \
+#          -DSDKCONFIG=sdkconfig.lowpower.generated build
+#
+# This is a bench crutch, not the shipping configuration. WiFi is the point
+# of the web UI and OTA; switch back to the normal build once a real 3.3 V
+# supply (500 mA+) or the board's own 12 V input is available.
+
+# No WiFi, no web UI, no OTA-over-network. This is the big one: the radio is
+# what pushes peak draw into the hundreds of milliamps.
+CONFIG_CS_WEBUI_ENABLE=n
+
+# Bluetooth is never initialised by this firmware, but dropping it saves
+# flash and RAM and removes any chance of the controller powering the radio.
+CONFIG_BT_ENABLED=n
+
+# 240 MHz costs roughly twice the core current of 80 MHz, and nothing in the
+# bring-up build is remotely compute-bound.
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_80=y
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ=80
+
+# PSRAM draws current and is unnecessary for the bring-up build. Also frees
+# GPIO16/17 for probing if you need them.
+CONFIG_SPIRAM=n

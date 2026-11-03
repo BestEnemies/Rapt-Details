@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FridgeG5 bench</title>
+<style>
+:root{--bg:#f4f6f7;--fg:#141e28;--mut:#67798a;--card:#fff;--rule:#d8e0e6;
+      --warm:#b84a22;--cool:#215f8b;--ok:#2e6b45;--acc:#a65f0c;--logbg:#0f1720;--logfg:#cfe0ee}
+@media(prefers-color-scheme:dark){:root{--bg:#0e141a;--fg:#e6ecf1;--mut:#8496a4;--card:#151d25;
+      --rule:#25313b;--warm:#e07a50;--cool:#5ea2ce;--ok:#6fbf8e;--acc:#dc9b42;--logbg:#0a1017;--logfg:#c6d8e6}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:60rem;margin:0 auto;padding:1.25rem;display:flex;flex-direction:column;gap:1.1rem}
+h1{font-size:1.3rem;margin:0;letter-spacing:-.01em}
+h2{font-size:.72rem;margin:0 0 .6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mut);font-weight:600}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+#meta{color:var(--mut);font-size:.8rem}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:.9rem 1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(7rem,1fr));gap:.55rem}
+.tile{border:1px solid var(--rule);border-radius:5px;padding:.5rem .6rem;display:flex;flex-direction:column;gap:.15rem}
+.tile .k{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mut)}
+.tile .v{font-family:ui-monospace,monospace;font-size:1rem;font-variant-numeric:tabular-nums}
+.on{color:var(--warm);font-weight:700}.off{color:var(--mut)}
+.cool.on{color:var(--cool)}
+button{font:inherit;padding:.4rem .7rem;border:1px solid var(--rule);border-radius:5px;
+       background:var(--card);color:var(--fg);cursor:pointer}
+button:hover{border-color:var(--acc)}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center}
+#log{background:var(--logbg);color:var(--logfg);border-radius:5px;padding:.7rem .8rem;height:24rem;
+     overflow:auto;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,monospace;font-size:12.5px;line-height:1.45}
+#bar{height:5px;background:var(--rule);border-radius:3px;overflow:hidden;display:none}
+#bar>i{display:block;height:100%;width:0;background:var(--acc)}
+.note{color:var(--mut);font-size:.8rem;margin-top:.5rem}
+.warn{color:var(--warm)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>FridgeG5 bench</h1>
+  <div id="meta" class="mono">connecting…</div>
+</header>
+
+<div class="card" id="alarm-card" style="display:none;border-color:var(--warm)">
+  <h2 style="color:var(--warm)">Alarms</h2>
+  <div id="alarms"></div>
+  <div class="row" style="margin-top:.6rem">
+    <button id="a-silence">Silence all</button>
+    <button id="a-dismiss">Dismiss all</button>
+    <span class="note" id="a-msg"></span>
+  </div>
+  <div class="note">Silence stops the buzzer and leaves the alarm showing.
+    Dismiss clears it &mdash; and is refused while the condition is still true.</div>
+</div>
+
+<div class="card">
+  <h2>Thermostat</h2>
+  <div class="grid" id="thermo"></div>
+  <div class="row" style="margin-top:.7rem">
+    <label><input type="checkbox" id="t-en"> enabled</label>
+    <span style="margin-left:.5rem">target</span>
+    <button id="t-dn">&minus;</button>
+    <input type="number" id="t-target" step="0.1" style="width:5.5rem;font:inherit;
+           padding:.35rem;border:1px solid var(--rule);border-radius:5px;
+           background:var(--card);color:var(--fg)">
+    <button id="t-up">+</button>
+    <span style="margin-left:.5rem">source</span>
+    <select id="t-src"><option value="internal">internal probe</option><option value="pill">RAPT Pill</option></select>
+    <span style="margin-left:.5rem">fan</span>
+    <select id="t-fan">
+      <option value="with_active">with heat/cool</option>
+      <option value="always_on">always on</option>
+      <option value="off">off</option>
+    </select>
+    <button id="t-apply">Apply</button>
+    <button id="t-save">Apply &amp; save</button>
+  </div>
+  <div class="note" id="t-msg"></div>
+</div>
+
+<div class="card">
+  <h2>Humidity</h2>
+  <div class="grid" id="humid"></div>
+  <div class="row" style="margin-top:.7rem">
+    <label><input type="checkbox" id="h-en"> dehumidify (reheat)</label>
+    <span style="margin-left:.5rem">target RH</span>
+    <input type="number" id="h-target" step="1" min="20" max="95" style="width:5rem;font:inherit;
+           padding:.35rem;border:1px solid var(--rule);border-radius:5px;
+           background:var(--card);color:var(--fg)">
+    <span>%</span>
+    <button id="h-apply">Apply</button>
+    <button id="h-save">Apply &amp; save</button>
+    <span class="note" id="h-msg"></span>
+  </div>
+  <div class="note">Runs the compressor to condense moisture while the heater
+    cancels the cooling, so RH falls without the temperature moving. Only
+    sensible on a chamber whose evaporator drains. Aborts if the temperature
+    strays beyond its limit, and rests after a duty cap.</div>
+</div>
+
+<div class="card">
+  <h2>RAPT sensors</h2>
+  <div id="pills" class="note">no sensors heard yet</div>
+</div>
+
+<div class="card">
+  <h2>Outputs</h2>
+  <div class="grid" id="outputs"></div>
+  <div class="row" style="margin-top:.7rem">
+    <button data-r="heater">heater</button>
+    <button data-r="cooler">cooler</button>
+    <button data-r="fan">fan</button>
+    <button data-r="light">light</button>
+    <button data-r="buzzer">buzzer</button>
+    <button data-r="allof" style="margin-left:auto">all off</button>
+  </div>
+  <div class="note" id="blocked"></div>
+</div>
+
+<div class="card">
+  <h2>Inputs &amp; probe</h2>
+  <div class="grid" id="inputs"></div>
+  <div class="row" style="margin-top:.7rem">
+    <span class="note">calibrate internal probe:</span>
+    <button id="c-p0">capture point 0 from Pill</button>
+    <button id="c-p1">capture point 1 from Pill</button>
+    <button id="c-clear">clear</button>
+    <span class="note" id="c-msg"></span>
+  </div>
+  <div class="note">Put the probe and the Pill in the same place and let them
+    settle. One point gives a constant offset; a second point at a
+    substantially different temperature (5&nbsp;°C or more apart) fits a slope.
+    The Pill is factory-calibrated, so it makes a good reference.</div>
+</div>
+
+<div class="card">
+  <h2>Firmware update</h2>
+  <div class="row">
+    <input type="file" id="file" accept=".bin">
+    <button id="upload">Upload &amp; reboot</button>
+    <span id="otastat" class="note"></span>
+  </div>
+  <div id="bar"><i></i></div>
+  <div class="note">Writes the inactive OTA slot. If the new build fails to come
+    up and mark itself valid, the bootloader rolls back automatically.</div>
+</div>
+
+<div class="card">
+  <h2>Log</h2>
+  <div class="row" style="margin-bottom:.55rem">
+    <label><input type="checkbox" id="follow" checked> follow</label>
+    <button id="clear">clear</button>
+    <span class="note" id="logstat"></span>
+  </div>
+  <div id="log" class="mono"></div>
+</div>
+
+</div>
+<script>
+const $ = s => document.querySelector(s);
+let since = null, stalled = 0, dirty = false;
+
+function tile(k, v, cls) {
+  return `<div class="tile"><span class="k">${k}</span><span class="v ${cls||''}">${v}</span></div>`;
+}
+
+async function poll() {
+  try {
+    const r = await fetch('/api/status', {cache:'no-store'});
+    if (!r.ok) throw new Error(r.status);
+    const s = await r.json();
+    stalled = 0;
+
+    $('#meta').textContent =
+      `${s.version} · ${s.partition} · ${s.ip} · ${s.rssi}dBm · up ${s.uptime_s}s · heap ${(s.heap/1024).toFixed(0)}KB`;
+
+    const o = s.outputs;
+    $('#outputs').innerHTML =
+      tile('heater', o.heater?'ON':'off', o.heater?'on':'off') +
+      tile('cooler', o.cooler?'ON':'off', 'cool ' + (o.cooler?'on':'off')) +
+      tile('fan',    o.fan?'ON':'off',    o.fan?'on':'off') +
+      tile('light',  o.light?'ON':'off',  o.light?'on':'off') +
+      tile('buzzer', o.buzzer?'ON':'off', o.buzzer?'on':'off') +
+      tile('compressor starts', s.starts.compressor) +
+      tile('compressor run', s.runtime.compressor + 's') +
+      tile('heater run', s.runtime.heating + 's');
+
+    const blk = [];
+    if (s.cool_blocked_s) blk.push(`cooler protected for ${s.cool_blocked_s}s`);
+    if (s.heat_blocked_s) blk.push(`heater protected for ${s.heat_blocked_s}s`);
+    $('#blocked').textContent = blk.join(' · ');
+
+    const i = s.inputs, p = s.probe;
+    let probeTiles;
+    if (p.ok) {
+      const calibrated = p.cal && p.cal.mode !== 'none';
+      probeTiles = tile('adc raw', p.raw) + tile('millivolts', p.mv) +
+                   tile('resistance', p.ohms.toFixed(0) + 'Ω') +
+                   tile('probe temp', p.celsius.toFixed(2) + '°C',
+                        calibrated ? '' : 'warn') +
+                   tile('calibration', p.cal ? p.cal.mode : 'none',
+                        calibrated ? '' : 'warn') +
+                   (calibrated ? tile('uncorrected', p.celsius_raw.toFixed(2) + '°C') : '');
+    } else {
+      probeTiles = tile('probe', p.fault, 'warn') + tile('adc raw', p.raw);
+    }
+    $('#inputs').innerHTML =
+      tile('up', i.up) + tile('down', i.down) + tile('select', i.select) +
+      tile('back', i.back) + tile('door', i.door) + probeTiles;
+
+    const t = s.thermostat;
+    const stateCls = t.state === 'cooling' ? 'cool on'
+                   : t.state === 'heating' ? 'on'
+                   : t.state === 'fault'   ? 'warn' : 'off';
+    $('#thermo').innerHTML =
+      tile('state', t.state, stateCls) +
+      tile('current', t.temp_valid ? t.temp.toFixed(2) + '°C' : '--', t.temp_valid ? '' : 'warn') +
+      tile('target', t.target.toFixed(1) + '°C') +
+      tile('deadband', '−' + t.heater_hys.toFixed(1) + ' / +' + t.cooler_hys.toFixed(1)) +
+      tile('source', t.source) +
+      tile('fan mode', t.fan_mode) +
+      tile('in state', t.state_s + 's') +
+      (t.fault ? tile('fault', t.fault, 'warn') : '');
+
+    if (!dirty) {
+      $('#t-en').checked = t.enabled;
+      $('#t-target').value = t.target.toFixed(1);
+      $('#t-src').value = t.source;
+      $('#t-fan').value = t.fan_mode;
+      $('#h-en').checked = t.humidity_enabled;
+      $('#h-target').value = t.rh_target.toFixed(0);
+    }
+
+    $('#humid').innerHTML =
+      tile('sensor', t.hum_sensor) +
+      tile('humidity', t.rh_valid ? t.rh.toFixed(1) + '%' : '--', t.rh_valid ? '' : 'off') +
+      tile('target', t.rh_target.toFixed(0) + '%') +
+      tile('deadband', '+' + t.rh_hys.toFixed(0) + '%') +
+      tile('reheat', t.reheat ? 'ACTIVE' : 'off', t.reheat ? 'on' : 'off') +
+      (t.reheat ? tile('running', t.reheat_s + 's') : '') +
+      (t.rest_s ? tile('resting', t.rest_s + 's', 'warn') : '') +
+      tile('abort if', '±' + t.reheat_max_dev.toFixed(1) + '°C');
+
+    const al = s.alarms || [];
+    $('#alarm-card').style.display = al.length ? '' : 'none';
+    if (al.length) {
+      $('#alarms').innerHTML = al.map(a =>
+        `<div class="tile" style="margin-bottom:.4rem;border-color:${a.active ? 'var(--warm)' : 'var(--rule)'}">
+           <span class="k">${a.id} &middot; ${a.active ? 'ACTIVE' : 'cleared, not dismissed'}${
+             a.silenced ? ' &middot; silenced' : ''} &middot; ${a.age_s}s${
+             a.count > 1 ? ' &middot; ' + a.count + 'x' : ''}</span>
+           <span class="v" style="font-family:inherit;font-size:.95rem;${
+             a.active ? 'color:var(--warm)' : ''}">${a.text}</span>
+         </div>`).join('');
+    }
+
+    if (s.pills && s.pills.length) {
+      $('#pills').innerHTML = s.pills.map(p =>
+        `<div class="tile" style="margin-bottom:.4rem">
+           <span class="k">${p.addr} &middot; v${p.v} &middot; ${p.rssi}dBm &middot; ${p.age_s}s ago${
+             p.interval_s ? ' &middot; every ~' + p.interval_s + 's' : ''}</span>
+           <span class="v">${p.celsius.toFixed(2)}°C &middot; SG ${p.gravity.toFixed(4)} &middot; ${p.battery}%${
+             p.velocity_valid ? ' &middot; ' + p.velocity.toFixed(2) + ' pt/d' : ''}</span>
+         </div>`).join('');
+    } else {
+      $('#pills').textContent = 'no sensors heard yet';
+    }
+
+    if (since === null) since = Math.max(0, s.log_head - 4000);
+  } catch (e) {
+    if (++stalled > 2) $('#meta').textContent = 'device unreachable…';
+  }
+}
+
+async function pollLog() {
+  if (since === null) return;
+  try {
+    const r = await fetch('/api/log?since=' + since, {cache:'no-store'});
+    if (!r.ok) return;
+    const next = r.headers.get('X-Log-Next');
+    const dropped = parseInt(r.headers.get('X-Log-Dropped') || '0', 10);
+    const text = await r.text();
+    if (dropped > 0) {
+      append(`\n--- ${dropped} bytes dropped (reader fell behind) ---\n`);
+    }
+    if (text) append(text);
+    if (next !== null) since = parseInt(next, 10);
+    $('#logstat').textContent = 'offset ' + since;
+  } catch (e) { /* device busy or rebooting; next tick retries */ }
+}
+
+function append(t) {
+  const el = $('#log');
+  const stick = $('#follow').checked;
+  el.textContent += t;
+  if (el.textContent.length > 200000) {
+    el.textContent = el.textContent.slice(-150000);
+  }
+  if (stick) el.scrollTop = el.scrollHeight;
+}
+
+document.querySelectorAll('button[data-r]').forEach(b => {
+  b.addEventListener('click', async () => {
+    const name = b.dataset.r;
+    let on = '1';
+    if (name !== 'allof') {
+      const v = $('#outputs').textContent;
+      on = b.classList.contains('active') ? '0' : '1';
+      b.classList.toggle('active');
+    }
+    const r = await fetch(`/api/relay?name=${name}&on=${on}`, {method:'POST'});
+    const j = await r.json().catch(() => ({}));
+    if (j.applied === false) {
+      $('#blocked').textContent = `refused — protection active for ${j.blocked_s}s`;
+    }
+    poll();
+  });
+});
+
+/* --- thermostat controls --- */
+
+/* Once you touch a control, stop the 1 Hz poll overwriting it mid-edit. */
+['#t-en', '#t-target', '#t-src', '#t-fan', '#h-en', '#h-target'].forEach(sel =>
+  $(sel).addEventListener('input', () => { dirty = true; }));
+
+function nudge(delta) {
+  const el = $('#t-target');
+  el.value = ((parseFloat(el.value) || 0) + delta).toFixed(1);
+  dirty = true;
+}
+$('#t-up').addEventListener('click', () => nudge(0.5));
+$('#t-dn').addEventListener('click', () => nudge(-0.5));
+
+/* One endpoint owns the whole config, so both cards post the full set. */
+async function applyThermostat(save, msgEl) {
+  const p = new URLSearchParams({
+    enabled:   $('#t-en').checked ? '1' : '0',
+    target:    $('#t-target').value,
+    source:    $('#t-src').value,
+    fan:       $('#t-fan').value,
+    humidity:  $('#h-en').checked ? '1' : '0',
+    rh_target: $('#h-target').value,
+  });
+  if (save) p.set('save', '1');
+  try {
+    const r = await fetch('/api/thermostat?' + p.toString(), {method: 'POST'});
+    if (r.ok) {
+      msgEl.textContent = save ? 'applied and saved' : 'applied';
+      dirty = false;
+    } else {
+      msgEl.textContent = 'rejected: ' + (await r.text());
+    }
+  } catch (e) {
+    msgEl.textContent = 'request failed';
+  }
+  poll();
+}
+$('#t-apply').addEventListener('click', () => applyThermostat(false, $('#t-msg')));
+$('#t-save').addEventListener('click',  () => applyThermostat(true,  $('#t-msg')));
+$('#h-apply').addEventListener('click', () => applyThermostat(false, $('#h-msg')));
+$('#h-save').addEventListener('click',  () => applyThermostat(true,  $('#h-msg')));
+
+/* --- alarms --- */
+async function alarmAction(action) {
+  try {
+    const r = await fetch('/api/alarm?action=' + action, {method: 'POST'});
+    $('#a-msg').textContent = r.ok ? action + 'd' : 'failed';
+  } catch (e) {
+    $('#a-msg').textContent = 'request failed';
+  }
+  poll();
+}
+$('#a-silence').addEventListener('click', () => alarmAction('silence'));
+$('#a-dismiss').addEventListener('click', () => alarmAction('dismiss'));
+
+/* --- probe calibration --- */
+async function calibrate(qs) {
+  try {
+    const r = await fetch('/api/calibrate?' + qs + '&save=1', {method: 'POST'});
+    const txt = await r.text();
+    if (r.ok) {
+      const j = JSON.parse(txt);
+      $('#c-msg').textContent = 'saved: ' + j.mode;
+    } else {
+      $('#c-msg').textContent = 'rejected: ' + txt;
+    }
+  } catch (e) {
+    $('#c-msg').textContent = 'request failed';
+  }
+  poll();
+}
+$('#c-p0').addEventListener('click', () => calibrate('point=0&from=pill'));
+$('#c-p1').addEventListener('click', () => calibrate('point=1&from=pill'));
+$('#c-clear').addEventListener('click', () => calibrate('clear=1'));
+
+$('#clear').addEventListener('click', () => { $('#log').textContent = ''; });
+
+$('#upload').addEventListener('click', () => {
+  const f = $('#file').files[0];
+  if (!f) { $('#otastat').textContent = 'choose a .bin first'; return; }
+
+  const xhr = new XMLHttpRequest();
+  $('#bar').style.display = 'block';
+  xhr.upload.onprogress = e => {
+    if (e.lengthComputable) {
+      $('#bar').firstElementChild.style.width = (100 * e.loaded / e.total) + '%';
+      $('#otastat').textContent = Math.round(100 * e.loaded / e.total) + '%';
+    }
+  };
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      $('#otastat').textContent = 'flashed — rebooting';
+      since = null;
+      setTimeout(() => { $('#bar').style.display = 'none'; }, 3000);
+    } else {
+      $('#otastat').textContent = 'failed: ' + xhr.responseText;
+    }
+  };
+  xhr.onerror = () => { $('#otastat').textContent = 'upload error'; };
+  xhr.open('POST', '/api/ota');
+  xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+  xhr.send(f);
+});
+
+poll();
+setInterval(poll, 1000);
+setInterval(pollLog, 600);
+</script>
+</body>
+</html>

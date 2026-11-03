@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+    .num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  </style>
+</helmet>
+
+<!--
+  OAuth 2.0 device-authorization flow: the device shows a user_code and the
+  user types it into the portal. So the CODE is the subject of the screen -
+  it is the thing being copied by hand, from a screen, into a phone.
+  Wording is the stock firmware's.
+-->
+<div style="width: 240px; height: 320px; background: #0e141a; color: #e6ecf1;
+            display: flex; flex-direction: column; padding: 14px 14px 12px;
+            box-sizing: border-box; gap: 10px">
+
+  <div style="font-size: 14px; font-weight: 800; letter-spacing: 0.06em">REGISTER DEVICE</div>
+
+  <div style="font-size: 14px; font-weight: 600; line-height: 1.4; color: #8fa3b4">
+    Please go to the RAPT Portal at:</div>
+
+  <div style="font-size: 18px; font-weight: 700; color: #dc9b42">app.rapt.io</div>
+
+  <div style="font-size: 14px; font-weight: 600; line-height: 1.4; color: #8fa3b4">
+    Select &ldquo;Add new Device&rdquo;, then enter:</div>
+
+  <!-- transcribed by hand, so: generous size, and grouped with a separator -->
+  <div style="display: flex; align-items: center; justify-content: center;
+              background: #1e2a36; border-radius: 4px; padding: 12px 8px">
+    <span style="font-size: 30px; font-weight: 800; letter-spacing: 0.04em">BDWD-HQPD</span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 9px; margin-top: auto">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc9b42"
+         stroke-width="2.8" stroke-linecap="round">
+      <circle cx="12" cy="12" r="8"></circle>
+    </svg>
+    <span style="font-size: 15px; font-weight: 600; color: #dc9b42">Waiting for portal</span>
+  </div>
+
+  <div style="display: flex; align-items: baseline; gap: 8px; border-top: 1px solid #3a4a5a;
+              padding-top: 10px">
+    <span style="font-size: 14px; font-weight: 600; color: #8fa3b4">expires in</span>
+    <span class="num" style="font-size: 15px; font-weight: 700">8:42</span>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 700; color: #8fa3b4">
+      BACK</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

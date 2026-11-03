@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+    .num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  </style>
+</helmet>
+
+<!--
+  Full-bleed, because an alarm has one job: be noticed from across the room
+  without being read. Alarm red #d8483a is deliberately distinct from the
+  heating orange #e07a50 - the two must never be confused at a glance.
+  Message strings are the stock firmware's own.
+-->
+<div style="width: 240px; height: 320px; background: #d8483a; color: #2a0c08;
+            display: flex; flex-direction: column; padding: 16px 16px 12px;
+            box-sizing: border-box; gap: 12px">
+
+  <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#2a0c08"
+       stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.3 3.2 1.8 17.5A2 2 0 0 0 3.5 20.5h17a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0Z"></path>
+    <path d="M12 9v4.5"></path><path d="M12 17.2h.01"></path>
+  </svg>
+
+  <div style="font-size: 20px; font-weight: 800; letter-spacing: 0.06em">{{a.kind}}</div>
+
+  <div style="font-size: 19px; font-weight: 700; line-height: 1.32; text-wrap: pretty">
+    {{a.text}}</div>
+
+  <div style="display: flex; align-items: baseline; gap: 8px; margin-top: auto">
+    <span style="font-size: 15px; font-weight: 700; opacity: 0.75">{{a.detail}}</span>
+    <span class="num" style="margin-left: auto; font-size: 15px; font-weight: 700;
+                 opacity: 0.75">14:32</span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 10px;
+              border-top: 2px solid #2a0c08; padding-top: 10px">
+    <span style="font-size: 15px; font-weight: 800">DISMISS</span>
+    <span style="margin-left: auto; font-size: 15px; font-weight: 800">SILENCE</span>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"alarm":{"editor":"enum","options":["probe","door","over","under","boiled","unreachable","too_high","too_low","error"],"default":"probe","section":"Alarm"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // Wording taken verbatim from the stock firmware so the device reads the
+    // same to anyone who has used an original unit.
+    const map = {
+      probe:       { kind: 'PROBE',   text: 'Temperature probe disconnected or shorted', detail: 'internal probe' },
+      door:        { kind: 'DOOR',    text: 'Door has been left open',                   detail: 'open 12 min' },
+      over:        { kind: 'TEMP',    text: 'Temperature over limits',                   detail: '24.8 C / max 22.0' },
+      under:       { kind: 'TEMP',    text: 'Temperature below limits',                  detail: '2.1 C / min 4.0' },
+      boiled:      { kind: 'VESSEL',  text: 'Vessel has boiled dry',                     detail: 'heater cut' },
+      unreachable: { kind: 'CONTROL', text: 'Target temperature unreachable',            detail: '3.4 C off for 2 h' },
+      too_high:    { kind: 'PROBE',   text: 'Temperature is too high for probe',         detail: 'limit 120 C' },
+      too_low:     { kind: 'PROBE',   text: 'Temperature is too low for probe',          detail: 'below range' },
+      error:       { kind: 'PROBE',   text: 'Temperature reading error',                 detail: 'unstable' },
+    };
+    return { a: map[this.props.alarm] ?? map.probe };
+  }
+}
+</script>
+</body>
+</html>

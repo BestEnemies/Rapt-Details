@@ -1,0 +1,517 @@
+<title>FridgeG5 Firmware Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#F3F5F7; --surface:#FFFFFF; --surface-2:#EAEEF1;
+  --ink:#141E28; --ink-2:#3C4C5A; --muted:#67798A;
+  --rule:#D8E0E6; --rule-2:#C3CFD8;
+  --accent:#A65F0C; --accent-soft:#F3E6D4;
+  --warm:#B84A22; --warm-soft:#F5DFD6;
+  --cool:#215F8B; --cool-soft:#D8E6F0;
+  --ok:#2E6B45;
+  --shadow:0 1px 2px rgba(20,30,40,.06),0 4px 16px rgba(20,30,40,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E141A; --surface:#151D25; --surface-2:#1D262F;
+    --ink:#E6ECF1; --ink-2:#B7C4CE; --muted:#8496A4;
+    --rule:#25313B; --rule-2:#33424E;
+    --accent:#DC9B42; --accent-soft:#3A2C18;
+    --warm:#E07A50; --warm-soft:#3B241B;
+    --cool:#5EA2CE; --cool-soft:#162B3B;
+    --ok:#6FBF8E;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 18px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E141A; --surface:#151D25; --surface-2:#1D262F;
+  --ink:#E6ECF1; --ink-2:#B7C4CE; --muted:#8496A4;
+  --rule:#25313B; --rule-2:#33424E;
+  --accent:#DC9B42; --accent-soft:#3A2C18;
+  --warm:#E07A50; --warm-soft:#3B241B;
+  --cool:#5EA2CE; --cool-soft:#162B3B;
+  --ok:#6FBF8E;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 18px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16.5px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:60rem; margin:0 auto; padding:3.5rem 1.5rem 6rem; display:flex; flex-direction:column; gap:3.25rem}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+h1,h2,h3{font-family:Archivo,-apple-system,sans-serif; text-wrap:balance; margin:0; line-height:1.18}
+h1{font-size:2.6rem; font-weight:700; letter-spacing:-.022em}
+h2{font-size:1.42rem; font-weight:600; letter-spacing:-.012em}
+h3{font-size:1.02rem; font-weight:600; letter-spacing:-.005em}
+p{margin:0}
+a{color:var(--accent)}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:.7rem; font-weight:500;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--muted);
+}
+header{display:flex; flex-direction:column; gap:1.1rem; padding-bottom:2.25rem; border-bottom:2px solid var(--ink)}
+.lede{font-size:1.1rem; color:var(--ink-2); max-width:62ch}
+.idgrid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(11rem,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); margin-top:.75rem;
+}
+.idgrid div{background:var(--surface); padding:.8rem .95rem; display:flex; flex-direction:column; gap:.22rem}
+.idgrid dt{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.13em; text-transform:uppercase; color:var(--muted)}
+.idgrid dd{margin:0; font-family:"IBM Plex Mono",monospace; font-size:.92rem; font-weight:500; color:var(--ink)}
+section{display:flex; flex-direction:column; gap:1.15rem}
+.shead{display:flex; flex-direction:column; gap:.35rem; padding-bottom:.7rem; border-bottom:1px solid var(--rule-2)}
+.note{color:var(--muted); font-size:.94rem; max-width:64ch}
+.membar{display:flex; height:3.1rem; border:1px solid var(--rule-2); overflow:hidden; background:var(--surface)}
+.membar span{
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+  font-family:"IBM Plex Mono",monospace; font-size:.68rem; font-weight:600;
+  color:#FFFFFF; border-right:1px solid var(--surface);
+}
+.membar span:last-child{border-right:0}
+.m-boot{background:var(--muted)}
+.m-app{background:var(--cool)}
+.m-app2{background:var(--cool); opacity:.55}
+.m-nvs{background:var(--accent)}
+.m-hist{background:var(--warm)}
+.m-free{background:var(--surface-2); color:var(--muted)}
+.scale{display:flex; justify-content:space-between; font-family:"IBM Plex Mono",monospace; font-size:.68rem; color:var(--muted)}
+.scroll{overflow-x:auto; border:1px solid var(--rule); background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:.93rem}
+th,td{padding:.6rem .85rem; text-align:left; border-bottom:1px solid var(--rule); vertical-align:top}
+thead th{
+  font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); font-weight:500;
+  background:var(--surface-2); border-bottom:1px solid var(--rule-2); white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td.num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+.name{font-weight:600}
+.pin{
+  display:inline-flex; align-items:center; justify-content:center; min-width:2.6rem;
+  padding:.12rem .5rem; border-radius:2px; font-family:"IBM Plex Mono",monospace;
+  font-size:.86rem; font-weight:600; border:1px solid currentColor;
+}
+.pin.warm{color:var(--warm); background:var(--warm-soft)}
+.pin.cool{color:var(--cool); background:var(--cool-soft)}
+.pin.neutral{color:var(--accent); background:var(--accent-soft)}
+.flow{display:flex; flex-direction:column; gap:0; counter-reset:step}
+.step{display:grid; grid-template-columns:2.4rem 1fr; gap:1rem; padding:1rem 0; border-bottom:1px solid var(--rule)}
+.step:last-child{border-bottom:0}
+.step::before{
+  counter-increment:step; content:counter(step);
+  font-family:"IBM Plex Mono",monospace; font-size:.82rem; font-weight:600;
+  color:var(--accent); border-top:2px solid var(--accent); padding-top:.3rem;
+}
+.step-b{display:flex; flex-direction:column; gap:.4rem}
+.step h3{font-size:1rem}
+.ep{
+  font-family:"IBM Plex Mono",monospace; font-size:.82rem; color:var(--ink-2);
+  background:var(--surface); border:1px solid var(--rule); padding:.35rem .6rem;
+  overflow-x:auto; white-space:nowrap;
+}
+.cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); gap:1.5rem}
+.card{background:var(--surface); border:1px solid var(--rule); padding:1.1rem 1.2rem; display:flex; flex-direction:column; gap:.7rem; box-shadow:var(--shadow)}
+.chips{display:flex; flex-wrap:wrap; gap:.35rem}
+.chip{
+  font-family:"IBM Plex Mono",monospace; font-size:.78rem; padding:.16rem .45rem;
+  background:var(--surface-2); border:1px solid var(--rule); color:var(--ink-2);
+}
+.chip.hi{background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:500}
+.status{display:flex; flex-direction:column; gap:.5rem}
+.srow{display:grid; grid-template-columns:6.5rem 1fr; gap:1rem; align-items:baseline; padding:.55rem 0; border-bottom:1px solid var(--rule)}
+.srow:last-child{border-bottom:0}
+.tag{font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; font-weight:600}
+.tag.done{color:var(--ok)}
+.tag.todo{color:var(--warm)}
+.callout{border-left:3px solid var(--accent); background:var(--surface); padding:.9rem 1.1rem; display:flex; flex-direction:column; gap:.4rem}
+footer{border-top:1px solid var(--rule-2); padding-top:1.5rem; color:var(--muted); font-size:.88rem; display:flex; flex-direction:column; gap:.4rem}
+@media (max-width:600px){
+  h1{font-size:2rem}
+  .wrap{padding:2.5rem 1.1rem 4rem; gap:2.5rem}
+  .step{grid-template-columns:1.8rem 1fr; gap:.7rem}
+  .srow{grid-template-columns:1fr; gap:.2rem}
+}
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Firmware teardown &middot; KegLand RAPT</span>
+  <h1>FridgeG5 Firmware Map</h1>
+  <p class="lede">Everything recovered from a full 4&nbsp;MB flash dump of the RAPT fermentation chamber controller &mdash; partition layout, GPIO assignments, recovery-mode tooling and the complete cloud protocol. Compiled as a working reference for writing replacement firmware that still speaks to the KegLand API and the RAPT&nbsp;Pill.</p>
+  <dl class="idgrid">
+    <div><dt>Chip</dt><dd>ESP32-D0WD-V3</dd></div>
+    <div><dt>Revision</dt><dd>v3.0 (ECO3)</dd></div>
+    <div><dt>Flash</dt><dd>4 MB &middot; DIO</dd></div>
+    <div><dt>Crystal</dt><dd>40 MHz</dd></div>
+    <div><dt>Project</dt><dd>fancyfridge</dd></div>
+    <div><dt>ESP-IDF</dt><dd>v4.3.2</dd></div>
+    <div><dt>Secure boot</dt><dd>disabled</dd></div>
+    <div><dt>Flash encryption</dt><dd>disabled</dd></div>
+  </dl>
+</header>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Flash</span>
+    <h2>Partition layout</h2>
+    <p class="note">Both OTA slots are populated. <code>ota_0</code> is the running image (otadata sequence 3, state <code>VALID</code>), leaving the June 2022 build in <code>ota_1</code> as a ready-made diff target.</p>
+  </div>
+
+  <div class="membar" role="img" aria-label="Proportional map of the 4 MB flash address space: bootloader and tables 64 KB, ota_0 1536 KB, ota_1 1536 KB, nvs 512 KB, history 256 KB, unallocated 192 KB">
+    <span class="m-boot" style="width:1.5625%" title="Bootloader, partition table, otadata, phy_init - 64 KB"></span>
+    <span class="m-app" style="width:37.5%" title="ota_0 - 1536 KB">ota_0</span>
+    <span class="m-app2" style="width:37.5%" title="ota_1 - 1536 KB">ota_1</span>
+    <span class="m-nvs" style="width:12.5%" title="nvs - 512 KB">nvs</span>
+    <span class="m-hist" style="width:6.25%" title="history - 256 KB">hist</span>
+    <span class="m-free" style="width:4.6875%" title="Unallocated - 192 KB">free</span>
+  </div>
+  <div class="scale"><span>0x000000</span><span>0x200000</span><span>0x400000</span></div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Partition</th><th>Type</th><th>Subtype</th><th>Offset</th><th>Size</th></tr></thead>
+      <tbody>
+        <tr><td class="name">bootloader</td><td>&mdash;</td><td>&mdash;</td><td class="num">0x001000</td><td class="num">28 KB</td></tr>
+        <tr><td class="name">partition table</td><td>&mdash;</td><td>&mdash;</td><td class="num">0x008000</td><td class="num">4 KB</td></tr>
+        <tr><td class="name">otadata</td><td>data</td><td>otadata</td><td class="num">0x00d000</td><td class="num">8 KB</td></tr>
+        <tr><td class="name">phy_init</td><td>data</td><td>phy</td><td class="num">0x00f000</td><td class="num">4 KB</td></tr>
+        <tr><td class="name">ota_0</td><td>app</td><td>ota_0</td><td class="num">0x010000</td><td class="num">1536 KB</td></tr>
+        <tr><td class="name">ota_1</td><td>app</td><td>ota_1</td><td class="num">0x190000</td><td class="num">1536 KB</td></tr>
+        <tr><td class="name">nvs</td><td>data</td><td>nvs</td><td class="num">0x310000</td><td class="num">512 KB</td></tr>
+        <tr><td class="name">history</td><td class="num">0x40</td><td>custom</td><td class="num">0x390000</td><td class="num">256 KB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <h3>Running image</h3>
+      <p class="note"><code>ota_0</code> &middot; version <code>20230607_123832_a78cf72</code> &middot; built 7 June 2023. Checksum and validation hash both verify.</p>
+    </div>
+    <div class="card">
+      <h3>Previous image</h3>
+      <p class="note"><code>ota_1</code> &middot; version <code>20220611_195740_57ffd92</code> &middot; built 11 June 2022. Same IDF, one year older.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Hardware</span>
+    <h2>GPIO and peripherals</h2>
+    <p class="note">Every <code>gpio_set_level</code> (<code>0x40153464</code>), <code>gpio_get_level</code> (<code>0x4015354c</code>) and ADC call site in the image was enumerated and its argument resolved. <strong>26 output sites, 25 input sites, 0 with a non-constant argument</strong> &mdash; so this is the complete pin inventory, not a sample. The recovery-mode handlers and the main application agree on every assignment.</p>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Output</th><th>GPIO</th><th>Call sites</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td class="name">Heater</td><td><span class="pin warm">18</span></td><td class="num">2</td><td>Heating element relay</td></tr>
+        <tr><td class="name">Cooler</td><td><span class="pin cool">33</span></td><td class="num">3</td><td>Compressor relay</td></tr>
+        <tr><td class="name">Fan</td><td><span class="pin neutral">19</span></td><td class="num">3</td><td>Circulation fan</td></tr>
+        <tr><td class="name">Light</td><td><span class="pin neutral">21</span></td><td class="num">3</td><td>Chamber light</td></tr>
+        <tr><td class="name">Buzzer</td><td><span class="pin neutral">32</span></td><td class="num">5</td><td>Audible alerts</td></tr>
+        <tr><td class="name">Display control</td><td><span class="pin neutral">4</span></td><td class="num">6</td><td>Used only inside <code>disp_spi.c</code> / <code>spi_display_probe.c</code></td></tr>
+        <tr><td class="name">Display control</td><td><span class="pin neutral">5</span></td><td class="num">3</td><td>Same region &mdash; individual roles not yet separated</td></tr>
+        <tr><td class="name">Display control</td><td><span class="pin neutral">27</span></td><td class="num">1</td><td>Probe region only</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Input</th><th>GPIO</th><th>Call sites</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td class="name">up</td><td><span class="pin neutral">15</span></td><td class="num">5</td><td>Also a boot strapping pin</td></tr>
+        <tr><td class="name">down</td><td><span class="pin neutral">13</span></td><td class="num">5</td><td>&mdash;</td></tr>
+        <tr><td class="name">select</td><td><span class="pin neutral">39</span></td><td class="num">5</td><td>Input-only, no internal pull-up</td></tr>
+        <tr><td class="name">back</td><td><span class="pin neutral">36</span></td><td class="num">8</td><td>Input-only; also drives hold-to-exit</td></tr>
+        <tr><td class="name">door</td><td><span class="pin neutral">35</span></td><td class="num">2</td><td>Input-only, no internal pull-up</td></tr>
+        <tr><td class="name">pump</td><td>&mdash;</td><td class="num">0</td><td>Hardcoded to <code>1</code> &mdash; not fitted</td></tr>
+        <tr><td class="name">play</td><td>&mdash;</td><td class="num">0</td><td>Hardcoded to <code>1</code> &mdash; not fitted</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cols">
+  </div>
+
+  <div class="callout">
+    <h3>Spare header: 3V3 / IO25 / IO26 / GND &mdash; confirmed free</h3>
+    <p class="note">An exhaustive scan of every <code>gpio_set_level</code>, <code>gpio_get_level</code> and <code>gpio_set_direction</code> call site &mdash; <strong>including indirect calls through a function pointer</strong> &mdash; finds no reference to either pin. No DAC, LEDC, MCPWM, touch, ADC2, RMT, I2S or PCNT code is linked into the stock image either.</p>
+    <p class="note">That indirect-call caveat matters: an earlier scan of this image looked complete and was not. The DC line on GPIO 2 is set through a <code>callx8</code> in an IRAM callback, so it never appeared in an enumeration of direct <code>call8</code> sites. Any claim that a pin is unused is only as good as the scan behind it.</p>
+    <div class="chips">
+      <span class="chip">neither is a strapping pin</span><span class="chip">both are RTC GPIOs</span>
+      <span class="chip hi">GPIO 25 = DAC1</span><span class="chip hi">GPIO 26 = DAC2</span>
+      <span class="chip warn">also ADC2 ch8/ch9 &mdash; unusable while WiFi runs</span>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <h3>Temperature probe</h3>
+      <p class="note">Despite the recovery screen showing two columns, <strong>only one ADC channel is read anywhere in the firmware</strong> &mdash; recovery mode and main application alike. There is one wired probe, not two.</p>
+      <div class="chips">
+        <span class="chip hi">ADC1 ch 6 = GPIO 34</span><span class="chip">12-bit</span>
+        <span class="chip">11 dB atten</span><span class="chip">Vref 1100 mV</span>
+      </div>
+      <p class="note">The main application samples <strong>128 times</strong> in a tight loop, accumulates, and takes <code>sum &gt;&gt; 7</code> as the mean. Each raw sample is range-checked and the reading is invalidated if any falls outside roughly <code>2&ndash;4093</code> &mdash; that is open-circuit and short-circuit probe detection. The mean goes through <code>esp_adc_cal_raw_to_voltage</code>.</p>
+      <p class="note">The divider maths, read instruction-for-instruction from the stock routine at <code>0x40107e65</code>:</p>
+      <div class="chips">
+        <span class="chip hi">R = 56000 &times; V / (3300 &minus; V)</span>
+        <span class="chip">56 kΩ series</span><span class="chip">thermistor on the low side</span>
+      </div>
+      <p class="note">The curve is a <strong>beta equation with runtime parameters</strong>, fetched by <code>nonvolatile_get_float()</code> as NVS keys <code>ntc_beta0</code> / <code>ntc_t0</code> / <code>ntc_r0</code> (float key indices 5, 6, 7), falling back to a defaults table at <code>0x3f40e0c4</code>:</p>
+      <div class="chips">
+        <span class="chip hi">ntc_beta0 = 3950</span><span class="chip hi">ntc_t0 = 298.15 K</span>
+        <span class="chip hi">ntc_r0 = 100 kΩ</span>
+      </div>
+      <p class="note">So a <strong>100 kΩ NTC, β=3950, referenced at 25 °C</strong>, with <code>1/T = 1/ntc_t0 + (1/ntc_beta0)&thinsp;ln(R/ntc_r0)</code>. A second identical set (<code>ntc_beta1/t1/r1</code>) serves the second probe channel. Per-unit correction comes from <code>cal_temp0</code>/<code>cal_adc0</code>, <code>cal_temp1</code>/<code>cal_adc1</code> and <code>temp_offset</code>, which a factory-commissioned unit carries in NVS.</p>
+      <p class="note">An earlier revision of this page said 10 kΩ. That constant does sit in the same literal pool but belongs to unrelated code &mdash; the series resistor is 56 kΩ.</p>
+    </div>
+    <div class="card">
+      <h3>Display</h3>
+      <p class="note">An <strong>ST7789V</strong> panel driven through a modified <code>lvgl_ili9341</code> component. The presence of <code>spi_display_probe.c</code> means the panel is auto-detected, so more than one variant exists across the product line &mdash; do not hard-code the controller in replacement firmware without probing.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Signal</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Host</td><td class="num">SPI2 / HSPI</td></tr>
+            <tr><td class="name">MOSI</td><td class="num">GPIO 23</td></tr>
+            <tr><td class="name">SCLK</td><td class="num">GPIO 22</td></tr>
+            <tr><td class="name">MISO</td><td class="num">-1 (write-only)</td></tr>
+            <tr><td class="name">CS</td><td class="num">GPIO 5</td></tr>
+            <tr><td class="name">DC</td><td class="num">GPIO 2</td></tr>
+            <tr><td class="name">RST</td><td class="num">GPIO 4</td></tr>
+            <tr><td class="name">Backlight</td><td class="num">GPIO 27</td></tr>
+            <tr><td class="name">Clock</td><td class="num">10 MHz (20 MHz variant)</td></tr>
+            <tr><td class="name">max_transfer_sz</td><td class="num">0x2800 = 10240</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">All six recovered exactly. MOSI, SCLK and CS come from the <code>spi_bus_config_t</code> and <code>spi_device_interface_config_t</code> structs built at <code>0x401844a4</code>. <strong>RST is GPIO 4</strong> &mdash; <code>probe_spi_init</code> pulses it high/20 ms/low/20 ms/high. <strong>Backlight is GPIO 27</strong>, beside the <code>"%s backlight."</code> strings.</p>
+      <p class="note"><strong>DC is GPIO 2</strong>, and it hides from a naive scan: the SPI pre-transfer callback at <code>0x40090660</code> does <code>movi.n a10, 2 ; callx8 &rarr; gpio_set_level</code>. Because that is an indirect <code>callx8</code> rather than a direct <code>call8</code>, it does not appear in an enumeration of <code>gpio_set_level</code> call sites. GPIO 2 is a boot strapping pin, so it must not be held high at reset.</p>
+      <p class="note">Confirmed on hardware: the panel takes RGB565 <strong>most-significant byte first</strong>. Filling with <code>0x001F</code> (blue) unswapped renders as <code>0x1F00</code> &mdash; green.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">On-device tooling</span>
+    <h2>Recovery mode</h2>
+    <p class="note">A complete diagnostic menu already built into the firmware, driven by the device&rsquo;s own buttons and screen rather than a serial console &mdash; <em>&ldquo;Press up/down to change option, select to perform action&rdquo;</em>. It exercises every output, reads every input, and samples both ADC channels, which makes it the fastest route to confirming a pin map on real hardware.</p>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <h3>Main menu</h3>
+      <div class="chips">
+        <span class="chip">0 &middot; Rollback last OTA</span><span class="chip">1 &middot; Connect to Wi-Fi</span>
+        <span class="chip">2 &middot; Do OTA update</span><span class="chip">3 &middot; Mark image valid</span>
+        <span class="chip">4 &middot; Restart</span><span class="chip">5 &middot; Erase NVS</span>
+        <span class="chip hi">6 &middot; Test output GPIO</span><span class="chip hi">7 &middot; Test input GPIO</span>
+        <span class="chip hi">8 &middot; Test ADC</span><span class="chip">9 &middot; Diagnostics</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Output test submenu</h3>
+      <div class="chips">
+        <span class="chip">0 &middot; Toggle heater</span><span class="chip">1 &middot; Toggle cooler</span>
+        <span class="chip">2 &middot; Toggle fan</span><span class="chip">3 &middot; Toggle light</span>
+        <span class="chip">4 &middot; Toggle buzzer</span><span class="chip">8 &middot; Back</span>
+      </div>
+      <p class="note">Diagnostics reports running partition offset, firmware version and state, heap and NVS statistics.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Cloud protocol</span>
+    <h2>How the device reaches KegLand</h2>
+    <p class="note">HTTPS only bootstraps the session; the working channel is Azure IoT Hub over MQTT. In every endpoint below, <code>%s</code> is a runtime-substituted domain &mdash; <code>test.rapt.io</code> also appears in the image as a staging host.</p>
+  </div>
+
+  <div class="flow">
+    <div class="step">
+      <div class="step-b">
+        <h3>Device-code pairing</h3>
+        <p class="note">Requests a user code, then polls for the token. This is the &ldquo;enter this code on the portal&rdquo; flow &mdash; no password is ever stored on the device. Recovered at <code>0x400fb7b0</code>.</p>
+        <div class="ep">POST https://id.%s/connect/deviceauthorization &mdash; client_id=rapt-device</div>
+        <div class="ep">POST https://id.%s/connect/token &mdash; grant_type=device_code | refresh_token</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-b">
+        <h3>Hub handoff</h3>
+        <p class="note">Posts the MAC address and receives a <code>connectionString</code> back. This is the pivot point from HTTPS to MQTT. Recovered at <code>0x400fc080</code>.</p>
+        <div class="ep">POST https://api.%s/api/device/fridge/connect &mdash; macAddress=%s &rarr; connectionString</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-b">
+        <h3>Profiles</h3>
+        <p class="note">Fermentation profiles and their step lists are fetched over HTTPS, not pushed over MQTT. Recovered at <code>0x400fc230</code>.</p>
+        <div class="ep">GET https://api.%s/api/device/fridge/GetProfileIds</div>
+        <div class="ep">GET https://api.%s/api/device/fridge/getProfile &mdash; macAddress=%s&amp;profileId=%s</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-b">
+        <h3>Telemetry and twin</h3>
+        <p class="note">Steady-state operation. Measurements go up as telemetry; configuration comes down as Azure device-twin <code>desired</code> properties, listed below.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-b">
+        <h3>Alerts</h3>
+        <p class="note">Threshold and profile events, including gravity conditions from the Pill. Also in <code>0x400fb7b0</code>.</p>
+        <div class="ep">POST https://api.%s/api/device/fridge/notify &mdash; macAddress, alertType, currentTemp, profileId, profileStepId, profileAlertId, currentGravity, currentGravityVelocity</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <h3>Telemetry fields</h3>
+      <p class="note">Built at <code>0x400fc230</code>.</p>
+      <div class="chips">
+        <span class="chip">fridgeId</span><span class="chip">temperature</span><span class="chip">totalRunTime</span>
+        <span class="chip">compressorRunTime</span><span class="chip">compressorStarts</span><span class="chip">heatingRunTime</span>
+        <span class="chip">heatingStarts</span><span class="chip">auxillaryRunTime</span><span class="chip">auxillaryStarts</span>
+        <span class="chip">profileId</span><span class="chip">profileStepId</span><span class="chip">rssi</span>
+        <span class="chip">controlDevice</span><span class="chip">devices</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Twin &ldquo;desired&rdquo; properties</h3>
+      <p class="note">Parsed at <code>0x400fcd34</code>. Every user-facing setting arrives here.</p>
+      <div class="chips">
+        <span class="chip">telemetryFrequency</span><span class="chip">tempUnit</span><span class="chip">timeZoneId</span>
+        <span class="chip">compressorDelay</span><span class="chip">modeSwitchDelay</span>
+        <span class="chip">coolingHysteresis</span><span class="chip">heatingHysteresis</span>
+        <span class="chip">coolingEnabled</span><span class="chip">heatingEnabled</span><span class="chip">fanEnabled</span>
+        <span class="chip">lightEnabled</span><span class="chip">soundsEnabled</span>
+        <span class="chip hi">pidEnabled</span><span class="chip hi">pidP</span><span class="chip hi">pidI</span><span class="chip hi">pidD</span>
+        <span class="chip">AlwaysOn</span><span class="chip">AlwaysOff</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Direct methods</h3>
+      <p class="note">Dispatched at <code>0x400fd314</code>.</p>
+      <div class="chips">
+        <span class="chip">DownloadProfile</span><span class="chip">StartProfileSession</span>
+        <span class="chip">SetPIDEnabled</span><span class="chip">Verify</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h3>Two things worth noting</h3>
+    <p class="note">There is a genuine <strong>PID controller</strong> in the firmware &mdash; <code>pidP</code>, <code>pidI</code>, <code>pidD</code> and <code>SetPIDEnabled</code> &mdash; not merely bang-bang control with hysteresis, and its gains are twin-configurable. Separately, <strong>gravity participates in the alert path</strong>: <code>currentGravity</code> and <code>currentGravityVelocity</code> are sent to <code>notify</code>, so the Pill&rsquo;s readings drive decisions rather than only being logged.</p>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <h3>TLS trust store</h3>
+      <p class="note">A fixed <code>root_ca[]</code> bundle of 6516 bytes, installed via <code>esp_tls_set_global_ca_store()</code> from both <code>app_main</code> and <code>wifi_init_sta</code>. Four public roots, no more &mdash; this is not the full ESP-IDF certificate bundle.</p>
+      <div class="chips">
+        <span class="chip">ISRG Root X1</span><span class="chip">DigiCert Global Root G2</span>
+        <span class="chip">Microsoft RSA Root CA 2017</span><span class="chip hi">Baltimore CyberTrust &mdash; expired 2025-05-12</span>
+      </div>
+      <p class="note">Build a current bundle for replacement firmware rather than copying this one. A hardcoded trust store is also a plausible cause if stock units begin failing to connect.</p>
+    </div>
+    <div class="card">
+      <h3>No embedded credentials</h3>
+      <p class="note">There is <strong>no private key material and no device certificate anywhere in the 4 MB image</strong>. The PEM markers near <code>0x3f45893e</code> are mbedTLS parser format constants, not key data.</p>
+      <p class="note">Device identity is established entirely at runtime &mdash; the OAuth device flow yields a refresh token, and <code>fridge/connect</code> yields the Azure connection string. Both live in <code>nvs</code>, not in the app image. Replacement firmware has nothing to extract and must simply re-pair.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Software</span>
+    <h2>Stack and code map</h2>
+    <p class="note">The vendor&rsquo;s own source is remarkably small &mdash; two files. Everything else is off-the-shelf, which makes a faithful reimplementation far more tractable than a 1&nbsp;MB image suggests.</p>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <h3>Vendor source</h3>
+      <div class="chips">
+        <span class="chip hi">/project/main/fancyfridge_main.c</span>
+        <span class="chip hi">/project/main/recovery_mode.c</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Components</h3>
+      <div class="chips">
+        <span class="chip">esp-azure &middot; azure-iot-sdk-c</span><span class="chip">uMQTT</span>
+        <span class="chip">esp32-wifi-manager</span><span class="chip">LVGL v6</span>
+        <span class="chip">NimBLE</span><span class="chip">ESP-IDF v4.3.2</span>
+      </div>
+      <p class="note">BLE is NimBLE rather than Bluedroid &mdash; worth matching if you want Pill scanning to behave identically.</p>
+    </div>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Address</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td class="num">0x400fb7b0</td><td>OAuth device flow, token refresh, <code>fridge/notify</code></td></tr>
+        <tr><td class="num">0x400fc080</td><td><code>fridge/connect</code> &rarr; Azure connection string</td></tr>
+        <tr><td class="num">0x400fc230</td><td>Telemetry payload, profile fetch</td></tr>
+        <tr><td class="num">0x400fcd34</td><td>Device-twin <code>desired</code> parser</td></tr>
+        <tr><td class="num">0x400fd314</td><td>Direct-method dispatch</td></tr>
+        <tr><td class="num">0x400fd834</td><td>Azure client init, alert queue</td></tr>
+        <tr><td class="num">0x400f0f88</td><td>Firmware and profile download</td></tr>
+        <tr><td class="num">0x4010b3xx</td><td>Recovery-mode output test</td></tr>
+        <tr><td class="num">0x40153464</td><td><code>gpio_set_level</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <span class="eyebrow">Next</span>
+    <h2>Mapped and not yet mapped</h2>
+  </div>
+  <div class="status">
+    <div class="srow"><span class="tag done">Mapped</span><span>Partition layout, OTA state, image segments</span></div>
+    <div class="srow"><span class="tag done">Mapped</span><span>Complete GPIO inventory &mdash; every call site, all arguments constant</span></div>
+    <div class="srow"><span class="tag done">Mapped</span><span>Input pins, including which two are not fitted on this unit</span></div>
+    <div class="srow"><span class="tag done">Mapped</span><span>ADC channel, width, attenuation and calibration path</span></div>
+    <div class="srow"><span class="tag done">Mapped</span><span>Display controller &mdash; ST7789V on SPI</span></div>
+    <div class="srow"><span class="tag done">Mapped</span><span>Cloud endpoints, auth flow, telemetry fields, twin properties, direct methods</span></div>
+    <div class="srow"><span class="tag done">Mapped</span><span>Recovery-mode menu structure and capabilities</span></div>
+    <div class="srow"><span class="tag done">Verified</span><span>Display bus and all six pins &mdash; MOSI, SCLK, CS, DC, RST, backlight; panel drawing on hardware</span></div>
+    <div class="srow"><span class="tag done">Verified</span><span>Thermistor model &mdash; 56 kΩ divider, beta equation, stock default coefficients</span></div>
+    <div class="srow"><span class="tag done">Verified</span><span>Button polarity &mdash; active-low, confirmed by press test on the board</span></div>
+    <div class="srow"><span class="tag done">Verified</span><span>All five relays and all five inputs exercised on real hardware</span></div>
+    <div class="srow"><span class="tag done">Mapped</span><span>Complete NVS key table &mdash; 58 keys, indices 0&ndash;23 float, with defaults</span></div>
+    <div class="srow"><span class="tag done">Verified</span><span>RAPT Pill BLE format &mdash; decoded and cross-checked against ambient temperature</span></div>
+    <div class="srow"><span class="tag done">Verified</span><span>Spare header GPIO 25 / 26 unused by stock firmware</span></div>
+    <div class="srow"><span class="tag todo">Open</span><span>Per-unit calibration &mdash; <code>cal_temp0/adc0</code>, <code>cal_temp1/adc1</code>, <code>temp_offset</code></span></div>
+    <div class="srow"><span class="tag todo">Open</span><span>Fermentation profile format and the cloud client</span></div>
+    <div class="srow"><span class="tag todo">Open</span><span><code>history</code> partition record format</span></div>
+    <div class="srow"><span class="tag todo">Open</span><span>NVS key schema &mdash; registration state and stored tokens</span></div>
+  </div>
+
+  <div class="callout">
+    <h3>Before flashing anything</h3>
+    <p class="note">The full 4&nbsp;MB dump includes <code>nvs</code>, which holds the device registration and refresh token &mdash; keep it, because restoring it is what saves you from re-pairing. Note also that the stock firmware checks for and applies OTA updates on its own, so custom firmware left reachable by that path could be overwritten by the vendor. A 64-character high-entropy string appears twice in the image; it was investigated and is <strong>benign</strong> &mdash; part of the self-signature of a public root certificate in the bundle above.</p>
+    <p class="note">Correction: this page previously suggested <code>KegLandisAwesome!</code> was the provisioning AP password. It is not. The captive-portal password is generated per unit and stored in NVS under <code>appwd</code> in the <code>espwifimgr</code> namespace, so it differs on every device.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Recovered from a full <code>read_flash</code> dump &mdash; 4,194,304 bytes, SHA-256 <span class="mono">26bc3903f0d53f56&hellip;b8327520</span>.</p>
+  <p>Disassembly: 424,818 lines across IROM and both IRAM segments; 3,061 functions located via <code>entry</code>; 32,950 literal loads resolved; 879 functions cross-referenced to their string constants.</p>
+</footer>
+
+</div>

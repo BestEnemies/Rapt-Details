@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap">
+  <style>
+    body { margin: 0; font-family: Montserrat, "Helvetica Neue", Arial, sans-serif; }
+    a { color: #dc9b42; } a:hover { color: #dc9b42; }
+    .num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  </style>
+</helmet>
+
+<div style="width: 240px; height: 320px; background: #0e141a; color: #e6ecf1;
+            display: flex; flex-direction: column; padding: 14px 14px 12px;
+            box-sizing: border-box; gap: 10px">
+
+  <div style="display: flex; align-items: center; gap: 8px">
+    <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.06em">RAPT PILL</span>
+    <span style="margin-left: auto; font-size: 14px; font-weight: 600; color: #6fbf8e">
+      42s ago</span>
+  </div>
+
+  <!-- 1.011 is five glyphs: 66px keeps it inside the 212px content width -->
+  <div style="display: flex; align-items: baseline; justify-content: center">
+    <span class="num" style="font-size: 66px; font-weight: 800; line-height: 0.95">1.011</span>
+  </div>
+  <div style="text-align: center; font-size: 14px; font-weight: 700;
+              letter-spacing: 0.08em; color: #8fa3b4">SPECIFIC GRAVITY</div>
+
+  <div style="display: flex; align-items: center; justify-content: center; gap: 8px;
+              background: #1e2a36; border-radius: 4px; padding: 9px 10px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6fbf8e"
+         stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14"></path><path d="M6 13l6 6 6-6"></path>
+    </svg>
+    <span class="num" style="font-size: 22px; font-weight: 700; color: #6fbf8e">1.18</span>
+    <span style="font-size: 14px; font-weight: 600; color: #8fa3b4">pt / day</span>
+  </div>
+
+  <!-- margin-top:auto rather than a spacer div: a spacer costs a gap each side -->
+  <div style="display: flex; align-items: baseline; gap: 8px; border-top: 1px solid #3a4a5a;
+              padding-top: 10px; margin-top: auto">
+    <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+                 color: #8fa3b4">WORT</span>
+    <span class="num" style="font-size: 30px; font-weight: 700">18.4</span>
+    <span style="font-size: 15px; font-weight: 600; color: #8fa3b4">&deg;C</span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 12px">
+    <div style="display: flex; align-items: center; gap: 6px">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6fbf8e"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="8" width="16" height="9" rx="1.6"></rect>
+        <path d="M21 11.5v2"></path>
+        <rect x="4" y="10" width="11" height="5" fill="#6fbf8e" stroke="none"></rect>
+      </svg>
+      <span class="num" style="font-size: 16px; font-weight: 700">85%</span>
+    </div>
+    <div style="display: flex; align-items: flex-end; gap: 3px; margin-left: auto">
+      <div style="width: 5px; height: 7px; background: #6fbf8e"></div>
+      <div style="width: 5px; height: 11px; background: #6fbf8e"></div>
+      <div style="width: 5px; height: 15px; background: #6fbf8e"></div>
+      <div style="width: 5px; height: 19px; background: #46586a"></div>
+    </div>
+    <span class="num" style="font-size: 16px; font-weight: 700; color: #8fa3b4">-63</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
