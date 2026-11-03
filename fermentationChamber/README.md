@@ -17,6 +17,86 @@ PSRAM, driving a compressor, heater, fan, light, buzzer and a small SPI panel.
   - `fridgeg5-map.html`, `segments.json`, `xrefs.json` — the stock-firmware
     analysis the pin map came from.
 
+## Board pin map (FridgeG5 controller)
+
+Recovered from the stock `fancyfridge` firmware by enumerating every
+`gpio_set_level` / `gpio_get_level` / ADC / SPI call site and resolving its
+constant argument (26 output sites, 25 input sites — the complete inventory, and
+the recovery-mode diagnostics agree with the main application on every pin).
+Everything marked **exact** was read from the instruction stream; all of it was
+then **confirmed on real hardware (2026-08-31)**. Source of truth:
+[`chamber-screen/firmware/main/board.h`](chamber-screen/firmware/main/board.h).
+
+MCU: **ESP32-D0WD-V3** rev 3.0, 4 MB flash, WROVER module with PSRAM.
+
+### Outputs — relay drivers, all active-high
+
+| Function | GPIO | Notes |
+|---|---|---|
+| Heater | **18** | heating element |
+| Cooler | **33** | compressor — see interlocks in the firmware README |
+| Fan | **19** | circulation fan |
+| Light | **21** | chamber light |
+| Buzzer | **32** | audible alerts |
+
+### Inputs — buttons and door, **active-low**
+
+| Function | GPIO | Notes |
+|---|---|---|
+| Up | **15** | boot-strapping pin: held low at reset it silences the ROM boot log (harmless) |
+| Down | **13** | |
+| Select | **39** | input-only, no internal pull-up — board provides it |
+| Back | **36** | input-only, no internal pull-up |
+| Door | **35** | input-only, no internal pull-up |
+
+The stock input-test screen shows seven columns (`up down select back pump door
+play`) but reads only these five; `pump` and `play` are hard-coded `1`, i.e. not
+fitted on this unit.
+
+### Temperature probe — NTC on ADC
+
+| | |
+|---|---|
+| Pin | **GPIO 34** = ADC1 channel 6 (the only ADC channel the stock firmware reads) |
+| Config | 12-bit, 11 dB attenuation (`ADC_ATTEN_DB_12` in IDF v5) |
+| Divider | 56 kΩ series resistor, thermistor on the **low** side: `R = 56000 · V / (3300 − V)` |
+| Curve | `1/T = 1/T0 + (1/β)·ln(R/R0)` with stock defaults β = 3950, T0 = 298.15 K, R0 = 100 kΩ (NVS `ntc_beta0`/`ntc_t0`/`ntc_r0`) |
+| Sampling | 128 samples, mean = sum ≫ 7; reading invalid if any raw sample is outside 2..4093 (open/short detection) |
+
+Factory units also carry per-unit `cal_temp0/cal_adc0`, `cal_temp1/cal_adc1` and
+`temp_offset` in NVS; an uncommissioned board reads several degrees low until
+calibrated.
+
+### Display — SPI panel (ST7789V class)
+
+| Signal | GPIO | Notes |
+|---|---|---|
+| MOSI | **23** | SPI2 / HSPI, write-only (no MISO) |
+| SCLK | **22** | 10 MHz (a 20 MHz variant exists) |
+| CS | **5** | |
+| DC | **2** | driven from the SPI pre-transfer callback via an *indirect* `callx8` — it does not show up in a plain scan of `gpio_set_level` call sites. Boot-strapping pin: fine as an output after boot |
+| RST | **4** | high / 20 ms / low / 20 ms / high reset pulse in `probe_spi_init` |
+| Backlight | **27** | active-high (this is **not** reset) |
+
+Max transfer 10240 bytes. The panel is natively 240×320 portrait but is **mounted
+rotated**: with the buttons along the bottom the usable UI is **320 wide × 240
+tall**. It takes RGB565 **MSB-first** — an unswapped `0x001F` (blue) renders green.
+The stock driver auto-probes the controller, so more than one panel variant ships;
+don't assume ST7789V on a board you haven't checked.
+
+### Spare expansion header — `3V3 / IO25 / IO26 / GND`
+
+**Confirmed free**: no reference to either pin anywhere in the stock image, and no
+DAC/LEDC/MCPWM/touch/ADC2/RMT/I2S/PCNT code is linked in.
+
+- Neither is a strapping pin; both are RTC GPIOs (can wake from deep sleep).
+- GPIO 25 = DAC1, GPIO 26 = DAC2 — the ESP32's only true analogue outputs.
+- Caveat: they are also ADC2 channels 8/9, and **ADC2 is unusable while Wi-Fi runs** — treat them as digital/DAC, not ADC inputs.
+- Chamber Screen uses them as **I²C** (`SDA = 25`, `SCL = 26`, 100 kHz) for an optional
+  Sensirion SHT3x/SHT4x humidity sensor at `0x44`. Other good uses: 1-Wire
+  (a factory-calibrated DS18B20 chain sidesteps NTC calibration), extra I²C sensors,
+  or a second SSR output.
+
 ## Its BLE beacon
 
 The chamber broadcasts an **encrypted `0xB1` advert**. The scheme — AES-128

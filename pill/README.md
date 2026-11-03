@@ -57,22 +57,38 @@ Relevant Pins:
 GPIO25 - I2C SDA
 GPIO26 - I2C SCL
 
-The following are dumped by official firmware on boot:
+### Full pin map (ESP32-S0WD)
 
-GPIO23 - Some kind of input: TBC
-GPIO34 - Some kind of input: Assume it is the analog signal from power management
+Recovered from the 2.0.0 firmware (see [`reconstructed/`](reconstructed/) — every
+function cited by its Ghidra address) and the boot log below, cross-checked against
+the teardown. **exact** = pin number read from a constant in the code; **inferred** =
+role deduced from surrounding logic.
 
-One of these will be the LED (charging LED is controlled by power managment):
+| GPIO | Direction | Function | Evidence |
+|---|---|---|---|
+| **25** | I²C SDA | Sensor bus `I2C_NUM_0`, internal pull-ups enabled | `accel.cpp` i²c config (`sda_io_num = 0x19`); matches teardown |
+| **26** | I²C SCL | Same bus | `scl_io_num = 0x1a` |
+| **18** | output | **Status LED** — LEDC PWM at 5 kHz (`status_led_tick` @ `0x400e6bc8`); also driven high at boot while the charger is connected | exact |
+| **5** | output | Driven low at boot (`gpio_set_level(5, 0)`); purpose not yet identified (second LED or an enable line) | exact pin, role unknown |
+| **23** | input, pull-up | **USB charger sense** (`0x17`): polled for edges → *"USB charger connected / disconnected"* with a 6000 ms debounce; also the **ext1 deep-sleep wake** source (`ESP_EXT1_WAKEUP_ANY_HIGH`), so plugging in wakes the Pill | exact |
+| **34** | input (analog) | **Battery voltage** on ADC1 ch6; `gpio_hold_dis(34)` at boot; while charging, raw samples go into a 30-deep ring buffer and the ADC offset self-calibrates (`adc_cal` in NVS) | exact pin; ADC role inferred |
+| 0 | strapping | IO0 → GND at reset for download mode (unsoldered header) | serial notes |
+| EN | reset | On the header; wired to the FTDI RTS line in our setup — plain `esptool` holds it low, use `pill_esptool.py` | serial notes |
+| 1 / 3 | UART0 TX / RX | Console at 115200, 3.3 V, on the unsoldered header | boot log |
+| 6–11 | SPI flash | IS25WP032, DIO, 40 MHz | boot log |
 
-GPIO18 - Some kind of output
-GPIO5 - Some kind of output
+Boot-time GPIO configuration as logged by the stock firmware: `GPIO18` output,
+`GPIO23` input + pull-up, `GPIO5` output, `GPIO34` input — exactly the four pins above.
+
+Wake sources are the sleep **timer** plus **ext1 on the charger line**; the charge
+LED itself is driven by the MCP73832, not the ESP32.
 
 
 
 ![PCB](board.jpg)
 
 * The platform is built upon a single PCB with an ESP32-S0WD 
-* Attached 32MB of flash memory (IS25WP032) https://www.issi.com/WW/pdf/IS25WP032-064-128.pdf
+* Attached 32 Mbit (4 MB) of SPI flash (IS25WP032, reported as "SPI Flash Size : 4MB" at boot) https://www.issi.com/WW/pdf/IS25WP032-064-128.pdf
 
 ### I2C Sensors
 SDA: GPIO25

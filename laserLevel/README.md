@@ -10,6 +10,10 @@ can be read straight from the advert with no key.
 - [`rapt_laser_decode.py`](rapt_laser_decode.py) — live scanner: prints distance /
   battery / sequence as the sensor advertises. `python rapt_laser_decode.py 30`
   (needs `bleak`, `cryptography`).
+- [`controls-and-settings.md`](controls-and-settings.md) — everything the app can
+  change on the sensor and how: operating modes (Smart / Ultra Low Power / Session /
+  Custom), every settings key and its `set_*` command, live-stream and fill-level
+  settings, vessel definitions, the BLE-vs-cloud paths, owner auth, OTA, fill alerts.
 - [`HANDOFF-laser-re.md`](HANDOFF-laser-re.md) — full working notes from the
   reverse-engineering effort: how the formats were identified, the app decompilation,
   dead ends, and open items.

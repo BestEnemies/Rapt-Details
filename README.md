@@ -10,9 +10,9 @@ Started as a RAPT Pill teardown; now organised per device.
 
 | Folder | Device | What's here |
 |---|---|---|
-| [`pill/`](pill/) | **RAPT Pill** hydrometer (ESP32-S0WD) | Hardware teardown, flash-dump + firmware analysis, the **BLE GATT command protocol** (live-verified), reconstructed application source, PlatformIO central that drives it, scripts |
-| [`laserLevel/`](laserLevel/) | **RAPT Laser Level Sensor** | BLE advert decode — distance / battery read straight from the plaintext advert; live decoder |
-| [`fermentationChamber/`](fermentationChamber/) | **RAPT FridgeG5** fermentation chamber | Its encrypted BLE beacon, plus **Chamber Screen** — a from-scratch ESP-IDF replacement firmware with every pin recovered from the stock image |
+| [`pill/`](pill/) | **RAPT Pill** hydrometer (ESP32-S0WD) | Hardware teardown with **full pin map**, flash-dump + firmware analysis, the **BLE GATT command protocol** (live-verified), reconstructed application source, PlatformIO central that drives it, scripts |
+| [`laserLevel/`](laserLevel/) | **RAPT Laser Level Sensor** | BLE advert decode — distance / battery read straight from the plaintext advert; live decoder; **all app controls & settings** (modes, `set_*` commands, vessel/fill config) |
+| [`fermentationChamber/`](fermentationChamber/) | **RAPT FridgeG5** fermentation chamber | Its encrypted BLE beacon, the controller's **board pin map**, plus **Chamber Screen** — a from-scratch ESP-IDF replacement firmware with every pin recovered from the stock image |
 | [`common/`](common/) | shared | BLE advert framing used by all devices, and the **0xB1 encrypted-advert scheme** (AES-128, keyed per device) |
 
 ## Quick reference — reading the adverts
