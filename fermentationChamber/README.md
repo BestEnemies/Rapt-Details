@@ -130,6 +130,78 @@ from the cloud twin. Decoder: `../laserLevel/rapt_laser_decode.py` with the cham
 `thingName` added to `THING_NAMES` — it prints the decrypted bytes; apply the ÷256 rule
 to the first two decoded bytes.
 
+## Updating & flashing — getting your own firmware on
+
+What the stock firmware does for updates, and what that means for installing
+Chamber Screen. All of this is read from the stock dump (`fridge_firmware.bin`,
+partition table, strings and disassembly), on **this** FridgeG5 (ESP32-D0WD-V3).
+
+### The device will boot anything you put in a slot
+
+- **Flash encryption: OFF** — the dump is plaintext (thousands of readable strings;
+  the whole pin map came out of it).
+- **Secure boot: OFF** — no secure-boot-v2 signature block in the bootloader or
+  either app slot. (The `secure_version` / appended-SHA-256 you see are the
+  anti-rollback counter and an *integrity* hash, not an authenticity signature.)
+- **Partition layout:** standard dual-OTA — `ota_0` @ `0x010000` and `ota_1` @
+  `0x190000` (1.5 MB each), plus `otadata`, `nvs`, and a custom `history` partition.
+
+So nothing cryptographic stops a custom image: whatever is written into an OTA slot
+and selected in `otadata` will boot. The only question is **how to get it into the
+slot without opening the case**.
+
+### The stock OTA will not do it for you
+
+The stock updater is **HTTPS-only and certificate-pinned**, so you cannot stand up a
+look-alike server and have the device pull your image:
+
+- The only update URL is `https://api.<domain>/api/device/update?macAddress=…&device=…&version=…`
+  (plus the Azure/OAuth endpoints). **There is no `http://` OTA fallback** — the bare
+  `http://%s` in the image is the Wi-Fi-setup captive portal, not firmware.
+- TLS verifies the server against a **baked-in CA store**
+  (`esp_tls_set_global_ca_store(root_ca, sizeof(root_ca))`). You can't present a
+  trusted certificate for `api.<domain>`, so a DNS-redirect / MITM update is refused.
+- Separately, that pinned store is the fixed four-root bundle whose **Baltimore
+  CyberTrust Root expired 2025-05-12** (see the Chamber Screen README). That works
+  *against* legitimate updates, not for injection.
+
+You **can** stop the device updating or phoning home by sinkholing `api.<domain>` /
+`id.<domain>` at your DNS — but that only pins it on its current firmware; it is a
+suppression lever, not an install path.
+
+### Classic ESP32 = UART ROM download only
+
+The ESP32-D0WD-V3 has **no USB**; its ROM download mode is over **UART**. So a
+genuinely no-solder first flash means non-soldered *contact* to the serial pins, not
+a cable-free trick. You need TX, RX, GND, **IO0 held low at reset**, and an **EN**
+strobe — the same five points used to take the dump (the Chamber Screen README
+flashes over `COM7`). If those are a plated header or test pads, a **pogo-pin clip or
+spring-loaded jig** does it with no iron; if they're bare vias you'll want a jig or a
+temporary header. (Share a photo of the board and we can mark the exact points.)
+
+Then write Chamber Screen into the slot and restore later if you want:
+
+```bash
+esptool --port COM7 --baud 460800 write_flash 0x10000 build/chamber_screen.bin
+# or flash the whole stock image back to undo everything:
+esptool --port COM7 --baud 460800 write_flash 0 fridge_firmware.bin
+```
+
+### After the first flash, it's cable-free forever
+
+Chamber Screen brings its **own** OTA — an unauthenticated local endpoint on your
+network, no cloud and no certificates:
+
+```bash
+curl --data-binary @build/chamber_screen.bin http://<device-ip>/api/ota
+```
+
+It writes the inactive slot and reboots, with bootloader rollback if the new image
+can't get on the network (see the Chamber Screen README). So the hardware step is
+**once**; every update after that is a `curl`. If you want zero hardware steps even
+the first time, the honest answer on a no-secure-boot classic ESP32 is: there isn't
+one that doesn't involve either the UART pins or the (cert-pinned) cloud.
+
 ## Not in the repo
 
 `fridge_firmware.bin` (the stock flash dump — keep yours, it restores the device and
