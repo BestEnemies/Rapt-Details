@@ -69,7 +69,7 @@ GPIO5 - Some kind of output
 
 
 
-![PCB](https://github.com/BestEnemies/pill/blob/main/board.jpg)
+![PCB](board.jpg)
 
 * The platform is built upon a single PCB with an ESP32-S0WD 
 * Attached 32MB of flash memory (IS25WP032) https://www.issi.com/WW/pdf/IS25WP032-064-128.pdf
